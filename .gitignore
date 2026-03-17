@@ -1,0 +1,17 @@
+# Dependências do Node
+node_modules/
+
+# Pastas de build do Electron
+dist/
+build/
+out/
+
+# Arquivos do Banco de Dados
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db

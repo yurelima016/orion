@@ -1,0 +1,380 @@
+/* --- Header Comum --- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+/* --- Botões Genéricos --- */
+#save-button {
+  background-color: #0c1116;
+  background: linear-gradient(
+    135deg,
+    #0c1116 0%,
+    #1f262e 25%,
+    #1f262e 50%,
+    #0c1116 100%
+  );
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+}
+
+#save-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+  filter: brightness(1.1);
+}
+
+#save-button i {
+  font-size: 1.2rem;
+}
+
+.btn-delete,
+.btn-edit {
+  background: transparent;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 5px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.btn-edit:hover {
+  color: #3498db;
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.btn-danger-soft {
+  background-color: #fceceb;
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger-soft:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* --- Tabelas --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+thead th {
+  color: #888;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 15px 10px;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+}
+
+tbody tr {
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+tbody td {
+  padding: 15px 10px;
+  color: #555;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* --- Modais --- */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+}
+
+.modal-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalPopIn 0.3s ease-out;
+}
+
+@keyframes modalPopIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header h3 {
+  margin: 10px 0 0 0;
+  color: #333;
+}
+
+.warning-icon {
+  font-size: 3rem;
+  color: #f1c40f;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-secondary,
+.btn-danger {
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #ecf0f1;
+  color: #7f8c8d;
+}
+.btn-secondary:hover {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.input-error {
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Inputs Checkbox */
+input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #3498db;
+  width: 16px;
+  height: 16px;
+}
+
+.modal-header {
+  margin-bottom: 25px;
+}
+
+.modal-card p {
+  margin-bottom: 30px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.modal-card.card-modal-style {
+  max-width: 500px;
+}
+
+.modal-header-modern {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  background: #eef2f7;
+  color: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px auto;
+  font-size: 1.8rem;
+}
+
+.modal-header-modern h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.modal-header-modern p {
+  margin: 5px 0 0 0;
+  color: #95a5a6;
+  font-size: 0.9rem;
+}
+
+.modern-form-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modern-form-modal .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.modern-form-modal label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  margin-left: 5px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon,
+.currency-symbol {
+  position: absolute;
+  left: 15px;
+  color: #bdc3c7;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.currency-symbol {
+  font-weight: bold;
+  font-size: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.modern-form-modal input,
+.modern-form-modal select {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 2px solid #f0f2f5;
+  background-color: #f9fbfc;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #34495e;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.modern-form-modal input:focus,
+.modern-form-modal select:focus {
+  border-color: #3498db;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+}
+
+.modal-footer {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  border-top: 1px solid #f0f2f5;
+  padding-top: 20px;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #7f8c8d;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-ghost:hover {
+  background: #f0f2f5;
+  color: #333;
+}
+
+.btn-primary-modal {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  transition: transform 0.2s;
+}
+
+.btn-primary-modal:hover {
+  transform: translateY(-2px);
+}
