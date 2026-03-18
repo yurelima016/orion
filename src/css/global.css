@@ -1,63 +1,98 @@
-/* --- Estilo Padrão e Reset --- */
+/* =========================================================
+   DESIGN SYSTEM (Variáveis Globais)
+   ========================================================= */
+:root {
+  /* Dimensões Base */
+  --sidebar-width: 250px;
+  --topbar-drag-height: 40px;
+
+  /* Cores Base do Tema Light */
+  --bg-main: #f0f2f5;
+  --text-main: #222b33;
+  --font-primary: "Segoe UI", system-ui, sans-serif;
+
+  /* Cores da Scrollbar */
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #bdc3c7;
+  --scrollbar-thumb-hover: #95a5a6;
+}
+
+/* =========================================================
+   RESET PADRÃO 
+   ========================================================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
 }
 
 body,
 html {
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
-  background-color: #f0f2f5;
-  font-family: "Segoe UI", sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* =========================================================
+   LAYOUT MESTRE (Container & Content)
+   ========================================================= */
 .app-container {
   display: flex;
   height: 100vh;
-  background-color: #f0f2f5;
+  background-color: var(--bg-main);
 }
 
 .content {
   flex: 1;
   padding: 50px 30px 30px 30px;
   overflow-y: auto;
-  margin-left: 250px;
-  color: #222b33;
+  margin-left: var(--sidebar-width);
 }
 
 .content::before {
   content: "";
   position: fixed;
   top: 0;
-  left: 250px;
-  width: calc(100% - 250px);
-  height: 40px;
+  left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  height: var(--topbar-drag-height);
   -webkit-app-region: drag;
   z-index: 999;
 }
 
-/* --- Scrollbar Customizada --- */
+.content header {
+  -webkit-app-region: no-drag;
+}
+
+/* =========================================================
+   SCROLLBAR CUSTOMIZADA
+   ========================================================= */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--scrollbar-track);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bdc3c7;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #95a5a6;
+  background: var(--scrollbar-thumb-hover);
 }

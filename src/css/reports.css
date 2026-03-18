@@ -1,4 +1,8 @@
-/* --- Barra de Ferramentas --- */
+/* =========================================================
+   VIEW: RELATÓRIOS
+   ========================================================= */
+
+/* --- Barra de Ferramentas (Filtros) --- */
 .reports-toolbar {
   background: #fff;
   border-radius: 15px;
@@ -51,6 +55,7 @@
   font-size: 0.95rem;
   outline: none;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .modern-input-toolbar:focus {
@@ -77,6 +82,9 @@
   align-items: center;
   gap: 8px;
   height: 46px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .btn-secondary-toolbar {
@@ -91,6 +99,12 @@
   align-items: center;
   gap: 8px;
   height: 46px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-toolbar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary-toolbar:hover {
@@ -98,7 +112,7 @@
   color: white;
 }
 
-/* --- Badges --- */
+/* --- Badges das Categorias --- */
 .category-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -134,10 +148,21 @@
   color: #7f8c8d;
 }
 
-/* --- Histórico --- */
+/* --- Histórico de Relatórios --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .history-section {
   margin-top: 30px;
-  animation: fadeIn 0.5s ease;
+  animation: fadeIn 0.5s ease forwards;
 }
 
 .history-header {
@@ -178,6 +203,7 @@
 .history-card:hover {
   transform: translateY(-3px);
   border-color: #3498db;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.1);
 }
 
 .btn-clear-history {
@@ -186,9 +212,16 @@
   color: #e74c3c;
   cursor: pointer;
   text-decoration: underline;
+  transition: opacity 0.2s;
 }
 
-/* --- Clipboard e Papel --- */
+.btn-clear-history:hover {
+  opacity: 0.7;
+}
+
+/* =========================================================
+   CLIPBOARD E PAPEL PARA IMPRESSÃO (PDF)
+   ========================================================= */
 #report-content {
   width: 100%;
   display: flex;
@@ -252,7 +285,6 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 15px;
-  box-sizing: border-box;
 }
 
 .clip-body::before,
@@ -280,10 +312,16 @@
 .paper header img {
   height: 50px;
 }
+
 .paper header h2 {
   width: 740px;
   display: flex;
   justify-content: center;
+}
+
+.report-title {
+  margin-top: 10px;
+  color: #2c3e50;
 }
 
 #report-summary-area .card,

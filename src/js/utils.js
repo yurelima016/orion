@@ -1,4 +1,7 @@
-// --- DADOS CONSTANTES ---
+// =========================================================
+// DADOS CONSTANTES
+// =========================================================
+
 const categoryMap = {
   food: { label: "Alimentação", color: "#e74c3c" },
   home: { label: "Casa", color: "#3498db" },
@@ -22,7 +25,10 @@ const bankColors = {
   caixa: "card-blue",
 };
 
-// --- FORMATADORES ---
+// =========================================================
+// FORMATADORES E CALCULADORAS
+// =========================================================
+
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -47,6 +53,10 @@ const getLast6Months = () => {
   return months;
 };
 
+// =========================================================
+// MODAIS (CONTROLE DE INTERFACE)
+// =========================================================
+
 // Modal Genérico (Promise-based)
 function showCustomModal(
   title = "Tem certeza?",
@@ -66,22 +76,21 @@ function showCustomModal(
     btnConfirm.textContent = confirmText;
     btnCancel.textContent = cancelText;
 
+    modalIcon.className = "bi";
+    modalIcon.classList.remove("text-success", "text-warning");
+
     if (type === "success") {
-      // Tema VERDE (Para favoritar, salvar)
       btnConfirm.className = "btn-success";
-      modalIcon.className = "bi bi-check-circle-fill";
-      modalIcon.style.color = "#2ecc71";
+      modalIcon.classList.add("bi-check-circle-fill", "text-success");
     } else {
-      // Tema VERMELHO (Padrão para excluir)
       btnConfirm.className = "btn-danger";
-      modalIcon.className = "bi bi-exclamation-triangle-fill"; // Ícone de Alerta
-      modalIcon.style.color = "#f1c40f";
+      modalIcon.classList.add("bi-exclamation-triangle-fill", "text-warning");
     }
 
-    modal.style.display = "flex";
+    modal.classList.add("show-modal");
 
     const closeModal = (result) => {
-      modal.style.display = "none";
+      modal.classList.remove("show-modal");
       // Limpa eventos para não acumular
       btnConfirm.onclick = null;
       btnCancel.onclick = null;
@@ -99,7 +108,39 @@ function showCustomModal(
   });
 }
 
-// Helper para validação de input
+// Modal para cartões múltiplos
+function openMultiploStarModal(cardId) {
+  const modal = document.getElementById("multiplo-modal");
+  modal.classList.add("show-modal");
+
+  document.getElementById("btn-multiplo-credit").onclick = async () => {
+    await window.api.saveSetting("orion_main_credit_card", String(cardId));
+    modal.classList.remove("show-modal");
+    loadCards();
+  };
+
+  document.getElementById("btn-multiplo-debit").onclick = async () => {
+    await window.api.saveSetting("orion_main_debit_card", String(cardId));
+    modal.classList.remove("show-modal");
+    loadCards();
+  };
+
+  document.getElementById("btn-multiplo-both").onclick = async () => {
+    await window.api.saveSetting("orion_main_credit_card", String(cardId));
+    await window.api.saveSetting("orion_main_debit_card", String(cardId));
+    modal.classList.remove("show-modal");
+    loadCards();
+  };
+
+  document.getElementById("btn-multiplo-cancel").onclick = () => {
+    modal.classList.remove("show-modal");
+  };
+}
+
+// =========================================================
+// HELPERS DE VALIDAÇÃO
+// =========================================================
+
 const setInputError = (input) => {
   input.classList.add("input-error");
   input.addEventListener("input", () => input.classList.remove("input-error"), {

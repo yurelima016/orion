@@ -1,3 +1,7 @@
+/* =========================================================
+   VIEW: DASHBOARD
+   ========================================================= */
+
 /* --- Filtro de Data --- */
 .date-filter-modern {
   padding: 10px 20px;
@@ -24,17 +28,17 @@
   box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
 }
 
-/* --- Cards de Resumo --- */
-.card-container,
-.infocard-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+/* --- Cards de Resumo Financeiro --- */
+.card-container {
   margin-bottom: 30px;
 }
 
 .infocard-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .card {
@@ -42,7 +46,8 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 200px;
+  flex: 1;
+  min-width: 200px;
 }
 
 .card h3 {
@@ -59,19 +64,13 @@
 /* --- Gráficos --- */
 .chartcard-container {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-.chartcard-container .chart-card:nth-child(1),
-.chartcard-container .chart-card:nth-child(2) {
-  width: 49.15%;
-}
-
 .chartcard-container .chart-card:nth-child(3) {
-  width: 100%;
+  grid-column: 1 / -1;
 }
 
 .chart-wrapper {
@@ -80,7 +79,7 @@
   width: 100%;
 }
 
-/* --- Formulário de Transação --- */
+/* --- Formulário de Nova Transação --- */
 .form {
   width: 100%;
   background: #ffffff;
@@ -137,7 +136,7 @@
   color: #555;
 }
 
-/* --- Lista de Transações --- */
+/* --- Lista de Transações (Tabela) --- */
 .transactions-list {
   background: #fff;
   padding: 25px;

@@ -1,17 +1,19 @@
-/* --- Sidebar & Navegação --- */
+/* =========================================================
+   SIDEBAR & NAVEGAÇÃO
+   ========================================================= */
 .sidebar {
-  width: 250px;
+  width: var(--sidebar-width, 250px);
   height: 100vh;
-  padding: 15px;
+  padding: 50px 15px 15px 15px;
   display: flex;
   flex-direction: column;
-  padding-top: 50px;
   background-color: #0c1116;
-  border-right: #222b33 10px solid;
+  border-right: 10px solid #222b33;
   gap: 5%;
   position: fixed;
   left: 0;
   top: 0;
+  z-index: 100;
   -webkit-app-region: drag;
 }
 
@@ -19,18 +21,19 @@
   list-style: none;
 }
 
+/* --- Links do Menu --- */
 .sidebar ul li a {
   position: relative;
   font-size: 1.2rem;
   color: #bdc3c7;
   text-decoration: none;
-  display: block;
-  padding: 12px 10px;
-  margin-bottom: 5px;
-  transition: 0.2s;
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 12px 10px;
+  margin-bottom: 5px;
+  transition: all 0.2s ease-in-out;
+  -webkit-app-region: no-drag;
 }
 
 .sidebar ul li a::after {
@@ -51,38 +54,38 @@
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.sidebar ul li a:hover {
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
   color: #fff;
   background-color: rgba(255, 255, 255, 0.02);
   padding-left: 15px;
   cursor: pointer;
 }
 
-.sidebar ul li a:hover::after {
+.sidebar ul li a:hover::after,
+.sidebar ul li a.active::after {
   width: 100%;
 }
 
+/* --- Elementos da Sidebar --- */
 #logo {
   width: 100%;
   height: auto;
   display: block;
   margin: 0 auto 20px auto;
   transition: transform 0.3s ease;
-}
-
-.sidebar ul li a,
-.user-profile,
-#logo {
   -webkit-app-region: no-drag;
 }
+
 .user-profile {
   margin-top: auto;
   padding-top: 20px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #222b33;
   color: #bdc3c7;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  -webkit-app-region: no-drag;
 }
 
 .user-info {
@@ -99,11 +102,10 @@
 .edit-user-btn {
   color: #bdc3c7;
   font-size: 1.2rem;
-  transition: all 0.3s;
+  transition: all 0.3s ease-in-out;
 }
 
 .edit-user-btn:hover {
   color: #f39c12;
   transform: translateX(2px);
-  transition: all 0.3s;
 }

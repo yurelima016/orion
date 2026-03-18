@@ -7,13 +7,15 @@ function setupPdfExport() {
     const originalText = btnExport.innerHTML;
     const inputStart = document.getElementById("report-start");
 
+    // Feedback visual de carregamento
     btnExport.innerHTML = '<i class="bi bi-hourglass-split"></i> Gerando...';
     document.body.style.cursor = "wait";
 
     const element = document.querySelector(".paper");
     const canvas = document.getElementById("report-chart");
-
     const img = document.createElement("img");
+
+    // Converte o Canvas em Imagem temporária para o html2canvas não falhar
     if (canvas) {
       img.src = canvas.toDataURL("image/png", 1.0);
       img.style.width = "100%";
@@ -40,17 +42,10 @@ function setupPdfExport() {
       .set(opt)
       .from(element)
       .save()
-      .then(() => {
-        // Reverte
-        if (canvas) {
-          img.remove();
-          canvas.style.display = "block";
-        }
-        btnExport.innerHTML = originalText;
-        document.body.style.cursor = "default";
-      })
       .catch((err) => {
-        console.error("Erro PDF:", err);
+        console.error("Erro ao gerar PDF:", err);
+      })
+      .finally(() => {
         if (canvas && img.parentNode) {
           img.remove();
           canvas.style.display = "block";
