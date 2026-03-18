@@ -158,19 +158,19 @@ tbody td {
   color: #333;
 }
 
-.warning-icon {
-  font-size: 3rem;
-  color: #f1c40f;
-}
-
 .modal-actions {
   display: flex;
   justify-content: center;
   gap: 15px;
 }
 
+.modal-header i {
+  font-size: 5rem;
+}
+
 .btn-secondary,
-.btn-danger {
+.btn-danger,
+.btn-success {
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
@@ -194,6 +194,15 @@ tbody td {
 }
 .btn-danger:hover {
   background-color: #c0392b;
+}
+
+.btn-success {
+  background-color: #09994a;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #088841;
 }
 
 .input-error {

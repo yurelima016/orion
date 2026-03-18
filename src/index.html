@@ -52,7 +52,7 @@
           <div class="user-info">
             <i class="bi bi-person-circle"></i> <span></span>
           </div>
-          <a href="#" class="logout-btn edit-user-btn" title="Editar Nome">
+          <a href="#" class="edit-user-btn" title="Editar Nome">
             <i class="bi bi-pencil-square"></i>
           </a>
         </div>
@@ -242,7 +242,7 @@
               </div>
               <div class="text-box">
                 <span>Melhor Dia Compra</span>
-                <h3>Dia 05</h3>
+                <h3></h3>
               </div>
             </div>
           </div>
@@ -520,15 +520,13 @@
     <div id="custom-modal" class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
-          <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+          <i></i>
           <h3>Tem certeza?</h3>
         </div>
         <p>Você deseja realmente excluir? Essa ação não pode ser desfeita.</p>
         <div class="modal-actions">
-          <button id="btn-cancel-modal" class="btn-secondary">Cancelar</button>
-          <button id="btn-confirm-modal" class="btn-danger">
-            Sim, Excluir
-          </button>
+          <button id="btn-cancel-modal" class="btn-secondary"></button>
+          <button id="btn-confirm-modal"></button>
         </div>
       </div>
     </div>
@@ -545,13 +543,13 @@
 
         <form id="card-form" class="modern-form-modal">
           <div class="input-group full-width">
-            <label>Apelido do Cartão</label>
+            <label>Titular</label>
             <div class="input-wrapper">
               <i class="bi bi-tag input-icon"></i>
               <input
                 type="text"
                 id="card-name"
-                placeholder="Ex: Nubank Principal"
+                placeholder="Ex: José..."
                 required
               />
             </div>
@@ -572,15 +570,21 @@
               </div>
             </div>
             <div class="input-group">
-              <label>Cor</label>
+              <label>Cartão</label>
               <div class="input-wrapper">
                 <i class="bi bi-palette input-icon"></i>
                 <select id="card-bank">
-                  <option value="purple">Roxo</option>
-                  <option value="orange">Laranja</option>
-                  <option value="black">Preto</option>
-                  <option value="blue">Azul</option>
-                  <option value="green">PicPay (Verde)</option>
+                  <option value="nubank">Nubank</option>
+                  <option value="inter">Inter</option>
+                  <option value="c6">C6 Bank</option>
+                  <option value="mercado pago">Mercado Pago</option>
+                  <option value="picpay">PicPay</option>
+                  <option value="neon">Neon</option>
+                  <option value="santander">Santander</option>
+                  <option value="itau">Itaú</option>
+                  <option value="bradesco">Bradesco</option>
+                  <option value="banco do brasil">Banco do Brasil</option>
+                  <option value="caixa">Caixa</option>
                 </select>
               </div>
             </div>
@@ -601,7 +605,7 @@
               </div>
             </div>
             <div class="input-group">
-              <label>Vencimento (Dia)</label>
+              <label>Dia de Fechamento</label>
               <div class="input-wrapper">
                 <i class="bi bi-calendar-event input-icon"></i>
                 <input

@@ -70,6 +70,7 @@
   position: relative;
   overflow: hidden;
   transition: transform 0.3s;
+  cursor: default;
 }
 
 .credit-card::before {
@@ -99,20 +100,71 @@
 }
 
 /* Cores dos Cartões */
+
+/* Nubank */
 .card-purple {
-  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  background: linear-gradient(135deg, #8a05be, #4f036e);
+  color: white;
 }
+
+/* Inter */
 .card-orange {
-  background: linear-gradient(135deg, #e67e22, #f39c12);
+  background: linear-gradient(135deg, #ff7a00, #ff500f);
+  color: white;
 }
-.card-black {
+
+/* Banco Itaú */
+.card-dark-orange {
+  background: linear-gradient(135deg, #ec7000, #c85a00);
+  color: white;
+}
+
+/* C6 Bank */
+.card-carbon {
   background: linear-gradient(135deg, #2c3e50, #000000);
+  color: #ecf0f1;
 }
-.card-blue {
-  background: linear-gradient(135deg, #2980b9, #3498db);
+
+/* Mercado Pago */
+.card-black {
+  background: linear-gradient(135deg, #1a1a1a, #050505);
+  color: white;
 }
+
+/* PicPay */
 .card-green {
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  background: linear-gradient(135deg, #11c76f, #0e9f59);
+  color: white;
+}
+
+/* Neon */
+.card-light-blue {
+  background: linear-gradient(135deg, #00e4df, #008e8b);
+  color: white;
+}
+
+/* Santander */
+.card-red {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+/* Bradesco */
+.card-dark-red {
+  background: linear-gradient(135deg, #cc092f, #7a051c);
+  color: white;
+}
+
+/* Banco do Brasil */
+.card-dark-blue {
+  background: linear-gradient(135deg, #003da5, #001e50);
+  color: white;
+}
+
+/* Caixa Econômica */
+.card-blue {
+  background: linear-gradient(135deg, #005ca9, #003b6d);
+  color: white;
 }
 
 .card-chip {
@@ -168,6 +220,31 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   opacity: 0.9;
+}
+
+.card-actions i {
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 1.1rem;
+  padding: 1px 3px;
+}
+
+.card-actions i:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+.btn-delete-card:hover {
+  color: #cc092f;
+}
+
+.btn-edit-card:hover {
+  color: #2980b9;
+}
+
+.btn-star-card:hover {
+  color: #f1c40f;
 }
 
 /* Card Fantasma (Adicionar Novo) */

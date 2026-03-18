@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const monthFilter = document.getElementById("month-filter");
   const today = new Date();
   monthFilter.value = `${today.getFullYear()}-${String(
-    today.getMonth() + 1
+    today.getMonth() + 1,
   ).padStart(2, "0")}`;
 
   monthFilter.addEventListener("change", () => {
@@ -63,7 +63,7 @@ function setupNavigation() {
 
     const activeIcon = links[viewName].querySelector("i");
     const iconClass = Array.from(activeIcon.classList).find(
-      (c) => c.startsWith("bi-") && c !== "bi"
+      (c) => c.startsWith("bi-") && c !== "bi",
     );
     if (iconClass && !iconClass.includes("-fill")) {
       activeIcon.classList.replace(iconClass, iconClass + "-fill");
@@ -172,8 +172,8 @@ async function loadTransactions() {
             </div>
         </td>
         <td class="amount-col" style="color: ${color}">${sign} ${formatCurrency(
-      t.amount
-    )}</td>
+          t.amount,
+        )}</td>
         <td>${new Date(t.date).toLocaleDateString("pt-BR", {
           timeZone: "UTC",
         })}</td>
@@ -295,7 +295,7 @@ function initTableEvents() {
     if (btnDelete) deleteItem(btnDelete.dataset.id);
     if (btnEdit) {
       const t = currentTransactions.find(
-        (item) => String(item.id) === String(btnEdit.dataset.id)
+        (item) => String(item.id) === String(btnEdit.dataset.id),
       );
       if (t) startEdit(t);
     }
@@ -316,7 +316,15 @@ function startEdit(t) {
 }
 
 async function deleteItem(id) {
-  if (await showCustomModal()) {
+  if (
+    await showCustomModal(
+      "Excluir movimentação?",
+      "Deseja excluir esse item de suas últimas transações?",
+      "Sim, exluir",
+      "Cancelar",
+      "danger",
+    )
+  ) {
     // Modal do utils.js
     await window.api.deleteTransaction(id);
     loadTransactions();
@@ -360,7 +368,13 @@ document
     const selected = document.querySelectorAll(".row-checkbox:checked");
     if (
       selected.length > 0 &&
-      (await showCustomModal("Excluir Vários?", "Apagar itens selecionados?"))
+      (await showCustomModal(
+        "Excluir Vários?",
+        "Exluir as transações selecionadas?",
+        "Sim, exluir",
+        "Cancelar",
+        "danger",
+      ))
     ) {
       for (const cb of selected) {
         await window.api.deleteTransaction(cb.value);
@@ -380,15 +394,28 @@ async function loadCards() {
   const container = document.getElementById("cards-container");
   container.innerHTML = "";
 
+  const savedMainCardId = localStorage.getItem("orion_main_card");
+  let mainCard = currentCards.find((c) => String(c.id) === savedMainCardId);
+
   // Métricas
   let totalLimit = currentCards.reduce(
     (acc, c) => acc + Number(c.limit_value || 0),
-    0
+    0,
   );
   document.getElementById("total-limit-display").textContent =
     formatCurrency(totalLimit);
   document.getElementById("total-cards-display").textContent =
     currentCards.length;
+
+  const bestDayDisplay = document.querySelector(
+    ".credit-summary-row .credit-metric-card:nth-child(3) h3",
+  );
+  if (mainCard) {
+    const diaFechamento = String(mainCard.day_expiry).padStart(2, "0");
+    bestDayDisplay.textContent = `Dia ${diaFechamento}`;
+  } else {
+    bestDayDisplay.textContent = `--`;
+  }
 
   // Botão Adicionar
   container.innerHTML += `
@@ -408,16 +435,21 @@ async function loadCards() {
       bgClass = `credit-card ${bgClass}`;
     }
 
+    const isMain = mainCard && String(card.id) === String(mainCard.id);
+    const starIcon = isMain ? "bi-star-fill" : "bi-star";
+
     container.innerHTML += `
             <div class="${bgClass}" ${styleAttr}>
                 <div class="card-top">
                     <div class="card-brand-wrapper">
                         <span class="card-chip"></span>
                         <span class="card-logo"><i class="bi bi-bank"></i> ${
-                          card.bank_color?.toUpperCase() || "BANK"
+                          card.bank_color?.toUpperCase().replaceAll("_", " ") ||
+                          "BANK"
                         }</span>
                     </div>
                     <div class="card-actions">
+                        <i class="bi ${starIcon} btn-star-card" data-id="${card.id}" title="Definir como Principal"></i>
                         <i class="bi bi-pencil-square btn-edit-card" data-id="${
                           card.id
                         }" title="Editar"></i>
@@ -432,13 +464,11 @@ async function loadCards() {
                 </div>
                 <div class="card-details">
                     <div><span style="opacity:0.7; font-size:0.7rem">TITULAR</span><br><strong>${card.name.toUpperCase()}</strong></div>
-                    <div style="text-align:right"><span style="opacity:0.7; font-size:0.7rem">VALIDADE</span><br><strong>${
-                      card.day_expiry
-                    }/28</strong></div>
+                    <div style="text-align:right"><span style="opacity:0.7; font-size:0.7rem">FECHAMENTO</span><br><strong>Dia ${String(card.day_expiry).padStart(2, "0")}</strong></div>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.9rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px;">
                     <span>Limite Total</span><strong>${formatCurrency(
-                      card.limit_value
+                      card.limit_value,
                     )}</strong>
                 </div>
             </div>
@@ -448,18 +478,39 @@ async function loadCards() {
 
 function initCardEvents() {
   const container = document.getElementById("cards-container");
-  container.addEventListener("click", (event) => {
+  container.addEventListener("click", async (event) => {
     const btnEdit = event.target.closest(".btn-edit-card");
     const btnDelete = event.target.closest(".btn-delete-card");
     const btnAdd = event.target.closest(".btn-open-add-card");
+    const btnStar = event.target.closest(".btn-star-card");
 
     if (btnAdd) openNewCardModal();
     if (btnDelete) removeCard(btnDelete.dataset.id);
     if (btnEdit) {
       const card = currentCards.find(
-        (c) => String(c.id) === String(btnEdit.dataset.id)
+        (c) => String(c.id) === String(btnEdit.dataset.id),
       );
       if (card) startEditCard(card);
+    }
+
+    if (btnStar) {
+      const id = btnStar.dataset.id;
+      const currentMainId = localStorage.getItem("orion_main_card");
+
+      if (String(id) === currentMainId) return;
+
+      const confirmed = await showCustomModal(
+        "Mudar Cartão Principal?",
+        "Deseja definir este cartão como principal? ",
+        "Confirmar",
+        "Voltar",
+        "success",
+      );
+
+      if (confirmed) {
+        localStorage.setItem("orion_main_card", id);
+        loadCards();
+      }
     }
   });
 }
@@ -510,7 +561,15 @@ cardForm.addEventListener("submit", async (e) => {
 });
 
 async function removeCard(id) {
-  if (await showCustomModal("Excluir Cartão?", "Remover este cartão?")) {
+  if (
+    await showCustomModal(
+      "Excluir Cartão?",
+      "Remover este cartão da carteira?",
+      "Remover",
+      "Cancelar",
+      "danger",
+    )
+  ) {
     await window.api.deleteCard(id);
     loadCards();
   }
@@ -556,7 +615,7 @@ document
     document.getElementById("report-outflow").textContent =
       formatCurrency(outflow);
     document.getElementById("report-balance").textContent = formatCurrency(
-      inflow - outflow
+      inflow - outflow,
     );
 
     // Tabela Relatório
@@ -583,12 +642,12 @@ document
                   timeZone: "UTC",
                 })}</td>
                 <td><span class="category-badge badge-${cat}">${
-        icons[cat] || "📦"
-      } ${info.label}</span></td>
+                  icons[cat] || "📦"
+                } ${info.label}</span></td>
                 <td>${t.description}</td>
                 <td style="color:${color}; font-weight:bold">${
-        t.type === "income" ? "+" : "-"
-      } ${formatCurrency(t.amount)}</td>
+                  t.type === "income" ? "+" : "-"
+                } ${formatCurrency(t.amount)}</td>
             </tr>`;
     });
 
@@ -603,11 +662,10 @@ document
       income: "Apenas Entradas",
       expense: "Apenas Saídas",
     };
-    document.getElementById(
-      "report-period-label"
-    ).textContent = `Período: ${new Date(start).toLocaleDateString(
-      "pt-BR"
-    )} até ${new Date(end).toLocaleDateString("pt-BR")} (${labelMap[type]})`;
+    document.getElementById("report-period-label").textContent =
+      `Período: ${new Date(start).toLocaleDateString(
+        "pt-BR",
+      )} até ${new Date(end).toLocaleDateString("pt-BR")} (${labelMap[type]})`;
   });
 
 // Histórico
@@ -648,10 +706,10 @@ function renderReportHistory() {
     div.innerHTML = `
             <div style="display:flex; justify-content:space-between;"><i class="bi bi-file-earmark-text"></i> <small>Reutilizar</small></div>
             <div class="history-period">${new Date(
-              item.start
+              item.start,
             ).toLocaleDateString("pt-BR", { timeZone: "UTC" })} - ${new Date(
-      item.end
-    ).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</div>
+              item.end,
+            ).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</div>
             <div class="history-type">${types[item.type]}</div>
         `;
     div.onclick = () => {
@@ -665,7 +723,15 @@ function renderReportHistory() {
 }
 
 window.clearReportHistory = async function () {
-  if (await showCustomModal("Limpar?", "Apagar histórico?")) {
+  if (
+    await showCustomModal(
+      "Limpar?",
+      "Apagar histórico?",
+      "Limpar",
+      "Cancelar",
+      "danger",
+    )
+  ) {
     localStorage.removeItem(HISTORY_KEY);
     renderReportHistory();
   }

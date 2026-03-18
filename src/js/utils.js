@@ -9,11 +9,17 @@ const categoryMap = {
 };
 
 const bankColors = {
-  purple: "card-purple",
-  orange: "card-orange",
-  black: "card-black",
-  blue: "card-blue",
-  green: "card-green",
+  nubank: "card-purple",
+  inter: "card-orange",
+  c6: "card-carbon",
+  mercado_pago: "card-black",
+  picpay: "card-green",
+  neon: "card-light-blue",
+  santander: "card-red",
+  itau: "card-dark-orange",
+  bradesco: "card-dark-red",
+  banco_do_brasil: "card-dark-blue",
+  caixa: "card-blue",
 };
 
 // --- FORMATADORES ---
@@ -45,14 +51,33 @@ const getLast6Months = () => {
 function showCustomModal(
   title = "Tem certeza?",
   text = "Essa ação não pode ser desfeita.",
+  confirmText = "Sim, excluir",
+  cancelText = "Cancelar",
+  type = "danger",
 ) {
   return new Promise((resolve) => {
     const modal = document.getElementById("custom-modal");
     const btnConfirm = document.getElementById("btn-confirm-modal");
     const btnCancel = document.getElementById("btn-cancel-modal");
+    const modalIcon = modal.querySelector(".modal-header i");
 
     modal.querySelector("h3").textContent = title;
     modal.querySelector("p").textContent = text;
+    btnConfirm.textContent = confirmText;
+    btnCancel.textContent = cancelText;
+
+    if (type === "success") {
+      // Tema VERDE (Para favoritar, salvar)
+      btnConfirm.className = "btn-success";
+      modalIcon.className = "bi bi-check-circle-fill";
+      modalIcon.style.color = "#2ecc71";
+    } else {
+      // Tema VERMELHO (Padrão para excluir)
+      btnConfirm.className = "btn-danger";
+      modalIcon.className = "bi bi-exclamation-triangle-fill"; // Ícone de Alerta
+      modalIcon.style.color = "#f1c40f";
+    }
+
     modal.style.display = "flex";
 
     const closeModal = (result) => {
