@@ -9,13 +9,8 @@ const createWindow = () => {
     width: 1024,
     height: 768,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
-    titleBarStyle: "hidden",
-    titleBarOverlay: {
-      color: "transparent",
-      symbolColor: "#2c3e50",
-      height: 35,
-    },
     webPreferences: {
       preload: path.join(__dirname, "src/preload.js"),
       nodeIntegration: false,
@@ -346,4 +341,26 @@ app.whenReady().then(() => {
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
+});
+
+/* ===========================================================
+   CONTROLES DA JANELA (CUSTOM TITLE BAR)
+   =========================================================== */
+
+ipcMain.on("window-minimize", () => {
+  if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.on("window-maximize", () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  }
+});
+
+ipcMain.on("window-close", () => {
+  if (mainWindow) mainWindow.close();
 });

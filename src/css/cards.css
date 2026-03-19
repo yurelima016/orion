@@ -120,7 +120,6 @@
 /* --- Elementos Internos do Cartão --- */
 .card-with-actions {
   position: relative;
-  padding-right: 50px;
 }
 
 .card-top-header {
@@ -228,7 +227,7 @@
   right: 15px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
   z-index: 10;
 }
 
@@ -236,7 +235,7 @@
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  font-size: 1.2rem;
+  font-size: 1rem;
   display: inline-block;
   width: 34px;
   height: 34px;

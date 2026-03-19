@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupNavigation();
   setupUserProfile();
   setupPdfExport();
+  setupWindowControls();
 
   const monthFilter = document.getElementById("month-filter");
   const today = new Date();
@@ -72,6 +73,32 @@ function setupNavigation() {
       switchView(key);
     });
   });
+}
+
+function setupWindowControls() {
+  const btnMinimize = document.getElementById("btn-minimize");
+  const btnMaximize = document.getElementById("btn-maximize");
+  const btnClose = document.getElementById("btn-close");
+
+  if (btnMinimize) {
+    btnMinimize.addEventListener("click", () => window.api.windowMinimize());
+  }
+
+  if (btnMaximize) {
+    btnMaximize.addEventListener("click", () => {
+      window.api.windowMaximize();
+      const icon = btnMaximize.querySelector("i");
+      if (icon.classList.contains("bi-square")) {
+        icon.classList.replace("bi-square", "bi-front");
+      } else {
+        icon.classList.replace("bi-front", "bi-square");
+      }
+    });
+  }
+
+  if (btnClose) {
+    btnClose.addEventListener("click", () => window.api.windowClose());
+  }
 }
 
 async function setupUserProfile() {

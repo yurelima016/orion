@@ -34,4 +34,12 @@ contextBridge.exposeInMainWorld("api", {
   // ==========================================
   getSetting: (key) => ipcRenderer.invoke("get-setting", key),
   saveSetting: (key, value) => ipcRenderer.invoke("save-setting", key, value),
+
+  // ==========================================
+  // CONTROLES DE JANELA
+  // ==========================================
+
+  windowMinimize: () => ipcRenderer.send("window-minimize"),
+  windowMaximize: () => ipcRenderer.send("window-maximize"),
+  windowClose: () => ipcRenderer.send("window-close"),
 });

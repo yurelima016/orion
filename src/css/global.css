@@ -55,20 +55,9 @@ button {
 
 .content {
   flex: 1;
-  padding: 50px 30px 30px 30px;
+  padding: 60px 30px 30px 30px;
   overflow-y: auto;
   margin-left: var(--sidebar-width);
-}
-
-.content::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  height: var(--topbar-drag-height);
-  -webkit-app-region: drag;
-  z-index: 999;
 }
 
 .content header {
@@ -95,4 +84,60 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
+}
+
+/* =========================================================
+   CUSTOM TITLE BAR (Controles de Janela)
+   ========================================================= */
+
+.custom-title-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: var(--sidebar-width, 250px);
+  height: var(--topbar-drag-height, 40px);
+  display: flex;
+  justify-content: space-between;
+  z-index: 9999;
+  background-color: var(--bg-main);
+}
+
+.title-bar-drag-area {
+  flex-grow: 1;
+  -webkit-app-region: drag;
+}
+
+.window-controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+}
+
+.control-btn {
+  background-color: transparent;
+  border: none;
+  width: 46px;
+  height: 100%;
+  color: #7f8c8d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-app-region: no-drag;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+  outline: none;
+}
+
+.control-btn i {
+  font-size: 1rem;
+}
+
+.control-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #2c3e50;
+}
+
+.control-btn.close-btn:hover {
+  background-color: #e74c3c;
+  color: white;
 }
