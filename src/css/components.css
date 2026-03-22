@@ -32,7 +32,10 @@ header {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
   margin-top: 10px;
   display: flex;
   align-items: center;
@@ -60,7 +63,9 @@ header {
   font-size: 1.2rem;
   padding: 5px;
   border-radius: 4px;
-  transition: all 0.2s;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .btn-delete:hover {
@@ -81,7 +86,9 @@ header {
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .btn-danger-soft:hover {
@@ -91,15 +98,20 @@ header {
 
 .btn-secondary,
 .btn-danger,
-.btn-success {
+.btn-success,
+.btn-sad,
+.btn-question {
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  transition: 0.2s;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
   border: none;
 }
 
+/* --- Secundário (Cancelar) --- */
 .btn-secondary {
   background-color: #ecf0f1;
   color: #7f8c8d;
@@ -108,6 +120,8 @@ header {
   background-color: #bdc3c7;
   color: #2c3e50;
 }
+
+/* --- Perigo --- */
 .btn-danger {
   background-color: #e74c3c;
   color: white;
@@ -115,12 +129,45 @@ header {
 .btn-danger:hover {
   background-color: #c0392b;
 }
+
+/* --- Sucesso --- */
 .btn-success {
   background-color: #09994a;
   color: white;
 }
 .btn-success:hover {
   background-color: #088841;
+}
+
+/* --- Alerta --- */
+.btn-question {
+  background-color: #f39c12;
+  color: white;
+}
+.btn-question:hover {
+  background-color: #d68910;
+}
+
+/* --- Pergunta --- */
+.btn-sad {
+  background-color: #3498db;
+  color: white;
+}
+.btn-sad:hover {
+  background-color: #2980b9;
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+.text-success {
+  color: #09994a !important;
+}
+.text-question {
+  color: #f39c12 !important;
+}
+.text-sad {
+  color: #3498db !important;
 }
 
 .btn-ghost {
@@ -131,7 +178,9 @@ header {
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .btn-ghost:hover {
@@ -171,7 +220,7 @@ header {
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  transition: all 0.2s;
+  transition: background 0.2s ease;
 }
 .btn-dark-full:hover {
   background: #1a252f;
@@ -366,6 +415,10 @@ tbody td {
   transform: translateY(-50%);
 }
 
+.modern-form-modal select {
+  cursor: pointer;
+}
+
 .modern-form-modal input,
 .modern-form-modal select {
   width: 100%;
@@ -376,7 +429,10 @@ tbody td {
   font-size: 0.95rem;
   color: #34495e;
   outline: none;
-  transition: all 0.3s;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .modern-form-modal input:focus,
@@ -500,4 +556,84 @@ input[type="checkbox"] {
   font-style: italic;
   text-align: center;
   width: 100%;
+}
+
+/* Badges dos cartões para a lista de transações */
+.badge-payment {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  display: inline-block;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.badge-payment-cash {
+  background-color: rgba(149, 165, 166, 0.1);
+  border-color: #95a5a6;
+  color: #7f8c8d;
+}
+
+.badge-nubank {
+  background-color: rgba(138, 5, 190, 0.1);
+  border-color: #8a05be;
+  color: #8a05be;
+}
+.badge-inter {
+  background-color: rgba(255, 122, 0, 0.1);
+  border-color: #ff7a00;
+  color: #ff7a00;
+}
+.badge-c6 {
+  background-color: rgba(36, 36, 36, 0.1);
+  border-color: #242424;
+  color: #242424;
+}
+.badge-mercado_pago {
+  background-color: rgba(0, 158, 227, 0.1);
+  border-color: #009ee3;
+  color: #009ee3;
+}
+.badge-picpay {
+  background-color: rgba(17, 199, 111, 0.1);
+  border-color: #11c76f;
+  color: #11c76f;
+}
+.badge-neon {
+  background-color: rgba(0, 163, 163, 0.1);
+  border-color: #00a3a3;
+  color: #00a3a3;
+}
+.badge-santander {
+  background-color: rgba(236, 0, 0, 0.1);
+  border-color: #ec0000;
+  color: #ec0000;
+}
+.badge-itau {
+  background-color: rgba(236, 112, 0, 0.1);
+  border-color: #ec7000;
+  color: #ec7000;
+}
+.badge-bradesco {
+  background-color: rgba(204, 9, 47, 0.1);
+  border-color: #cc092f;
+  color: #cc092f;
+}
+.badge-banco_do_brasil {
+  background-color: rgba(252, 236, 11, 0.2);
+  border-color: #c9b900;
+  color: #9c8e00;
+}
+.badge-caixa {
+  background-color: rgba(0, 92, 169, 0.1);
+  border-color: #005ca9;
+  color: #005ca9;
+}
+
+.desc-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }

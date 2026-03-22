@@ -32,20 +32,56 @@ const createWindow = () => {
 
 ipcMain.handle("save-transaction", async (event, data) => {
   try {
-    const stmt = db.prepare(`
-      INSERT INTO transactions (amount, description, type, date, category) 
-      VALUES (?, ?, ?, ?, ?)
-    `);
+    const processPayment = db.transaction((txData) => {
+      const stmt = db.prepare(`
+          INSERT INTO transactions (amount, description, type, date, category, card_id) 
+          VALUES (?, ?, ?, ?, ?, ?)
+        `);
 
-    const info = stmt.run(
-      data.value,
-      data.description,
-      data.type,
-      data.data,
-      data.category,
-    );
+      const info = stmt.run(
+        txData.value,
+        txData.description,
+        txData.type,
+        txData.data,
+        txData.category,
+        txData.card_id || null,
+      );
 
-    return { success: true, id: info.lastInsertRowid };
+      const newTransactionId = info.lastInsertRowid;
+
+      if (txData.card_id) {
+        const card = db
+          .prepare("SELECT * FROM cards WHERE id = ?")
+          .get(txData.card_id);
+
+        if (card) {
+          if (card.card_type === "Débito") {
+            let newBalance = card.account_balance;
+            if (txData.type === "expense") newBalance -= txData.value;
+            if (txData.type === "income") newBalance += txData.value;
+
+            db.prepare("UPDATE cards SET account_balance = ? WHERE id = ?").run(
+              newBalance,
+              txData.card_id,
+            );
+          } else if (card.card_type === "Crédito") {
+            let newLimit = card.limit_value;
+            if (txData.type === "expense") newLimit -= txData.value;
+            if (txData.type === "income") newLimit += txData.value;
+
+            db.prepare("UPDATE cards SET limit_value = ? WHERE id = ?").run(
+              newLimit,
+              txData.card_id,
+            );
+          }
+        }
+      }
+
+      return newTransactionId;
+    });
+
+    const insertedId = processPayment(data);
+    return { success: true, id: insertedId };
   } catch (err) {
     console.error("[Erro Backend] Salvar transação:", err);
     return { success: false, error: err.message };

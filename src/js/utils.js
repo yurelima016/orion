@@ -54,8 +54,41 @@ const getLast6Months = () => {
 };
 
 // =========================================================
-// MODAIS (CONTROLE DE INTERFACE)
+// MODAIS E CONTROLE DE INTERFACE
 // =========================================================
+
+// Botão de Privacidade
+document.addEventListener("DOMContentLoaded", () => {
+  const togglePrivacyBtn = document.getElementById("toggle-privacy");
+  const privacyIcon = document.getElementById("privacy-icon");
+
+  if (!togglePrivacyBtn || !privacyIcon) {
+    console.error(
+      "Erro: Botão ou ícone de privacidade não encontrados no DOM.",
+    );
+    return;
+  }
+
+  let isPrivacyMode = localStorage.getItem("privacyMode") === "true";
+
+  const applyPrivacyState = () => {
+    if (isPrivacyMode) {
+      document.body.classList.add("privacy-mode");
+      privacyIcon.className = "bi bi-eye-slash";
+    } else {
+      document.body.classList.remove("privacy-mode");
+      privacyIcon.className = "bi bi-eye";
+    }
+  };
+
+  applyPrivacyState();
+
+  togglePrivacyBtn.addEventListener("click", () => {
+    isPrivacyMode = !isPrivacyMode;
+    localStorage.setItem("privacyMode", isPrivacyMode);
+    applyPrivacyState();
+  });
+});
 
 // Modal Genérico (Promise-based)
 function showCustomModal(
@@ -77,14 +110,18 @@ function showCustomModal(
     btnCancel.textContent = cancelText;
 
     modalIcon.className = "bi";
-    modalIcon.classList.remove("text-success", "text-warning");
-
     if (type === "success") {
       btnConfirm.className = "btn-success";
       modalIcon.classList.add("bi-check-circle-fill", "text-success");
+    } else if (type === "sad") {
+      btnConfirm.className = "btn-sad";
+      modalIcon.classList.add("bi-emoji-frown-fill", "text-sad");
+    } else if (type === "question") {
+      btnConfirm.className = "btn-question";
+      modalIcon.classList.add("bi-question-circle-fill", "text-question");
     } else {
       btnConfirm.className = "btn-danger";
-      modalIcon.classList.add("bi-exclamation-triangle-fill", "text-warning");
+      modalIcon.classList.add("bi-exclamation-triangle-fill", "text-danger");
     }
 
     modal.classList.add("show-modal");
@@ -106,35 +143,6 @@ function showCustomModal(
       if (e.target === modal) closeModal(false);
     };
   });
-}
-
-// Modal para cartões múltiplos
-function openMultiploStarModal(cardId) {
-  const modal = document.getElementById("multiplo-modal");
-  modal.classList.add("show-modal");
-
-  document.getElementById("btn-multiplo-credit").onclick = async () => {
-    await window.api.saveSetting("orion_main_credit_card", String(cardId));
-    modal.classList.remove("show-modal");
-    loadCards();
-  };
-
-  document.getElementById("btn-multiplo-debit").onclick = async () => {
-    await window.api.saveSetting("orion_main_debit_card", String(cardId));
-    modal.classList.remove("show-modal");
-    loadCards();
-  };
-
-  document.getElementById("btn-multiplo-both").onclick = async () => {
-    await window.api.saveSetting("orion_main_credit_card", String(cardId));
-    await window.api.saveSetting("orion_main_debit_card", String(cardId));
-    modal.classList.remove("show-modal");
-    loadCards();
-  };
-
-  document.getElementById("btn-multiplo-cancel").onclick = () => {
-    modal.classList.remove("show-modal");
-  };
 }
 
 // =========================================================

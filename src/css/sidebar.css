@@ -32,7 +32,10 @@
   gap: 10px;
   padding: 12px 10px;
   margin-bottom: 5px;
-  transition: all 0.2s ease-in-out;
+  transition:
+    color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out,
+    padding-left 0.2s ease-in-out;
   -webkit-app-region: no-drag;
 }
 
@@ -102,7 +105,9 @@
 .edit-user-btn {
   color: #bdc3c7;
   font-size: 1.2rem;
-  transition: all 0.3s ease-in-out;
+  transition:
+    color 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
 }
 
 .edit-user-btn:hover {

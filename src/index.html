@@ -78,7 +78,14 @@
         <section id="view-dashboard" class="view">
           <header>
             <h1>Dashboard</h1>
-            <div>
+            <div class="dashboard-controls">
+              <button
+                id="toggle-privacy"
+                class="btn-privacy"
+                title="Ocultar/Mostrar Valores"
+              >
+                <i id="privacy-icon" class="bi bi-eye"></i>
+              </button>
               <input
                 type="month"
                 id="month-filter"
@@ -90,16 +97,22 @@
           <div class="card-container">
             <div class="infocard-container">
               <div class="card">
-                <h3>Saldo Atual</h3>
-                <p id="saldo" class="value">R$ 0,00</p>
+                <h3>Balanço Mensal</h3>
+                <p id="saldo" class="value">
+                  R$ <span class="privacy-sensitive">0,00</span>
+                </p>
               </div>
               <div class="card">
                 <h3>Entradas</h3>
-                <p id="entradas" class="value">R$ 0,00</p>
+                <p id="entradas" class="value">
+                  R$ <span class="privacy-sensitive">0,00</span>
+                </p>
               </div>
               <div class="card">
                 <h3>Saídas</h3>
-                <p id="saidas" class="value">R$ 0,00</p>
+                <p id="saidas" class="value">
+                  R$ <span class="privacy-sensitive">0,00</span>
+                </p>
               </div>
             </div>
 
@@ -157,16 +170,25 @@
                 </select>
               </div>
             </div>
-            <div class="input-group full-width">
-              <label for="category">Categoria</label>
-              <select id="category">
-                <option value="others">📦 Outros</option>
-                <option value="food">🍔 Alimentação</option>
-                <option value="home">🏠 Casa</option>
-                <option value="transport">🚗 Transporte</option>
-                <option value="leisure">🎉 Lazer</option>
-                <option value="work">💼 Trabalho</option>
-              </select>
+            <div class="form-row">
+              <div class="input-group">
+                <label for="category">Categoria</label>
+                <select id="category">
+                  <option value="others">📦 Outros</option>
+                  <option value="food">🍔 Alimentação</option>
+                  <option value="home">🏠 Casa</option>
+                  <option value="transport">🚗 Transporte</option>
+                  <option value="leisure">🎉 Lazer</option>
+                  <option value="work">💼 Trabalho</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="payment-method">Forma de Pagamento</label>
+                <select id="payment-method">
+                  <option value="">💵 Dinheiro</option>
+                </select>
+              </div>
             </div>
             <button type="submit" id="save-button">
               <i class="bi bi-check-lg"></i> Confirmar Transação
@@ -212,7 +234,9 @@
               </div>
               <div class="text-box">
                 <span>Limite Global</span>
-                <h3 id="total-limit-display">R$ 0,00</h3>
+                <h3 id="total-limit-display">
+                  R$ <span class="privacy-sensitive">0,00</span>
+                </h3>
               </div>
             </div>
             <div class="credit-metric-card">
@@ -221,7 +245,9 @@
               </div>
               <div class="text-box">
                 <span>Saldo Global</span>
-                <h3 id="total-balance-display">R$ 0,00</h3>
+                <h3 id="total-balance-display">
+                  R$ <span class="privacy-sensitive">0,00</span>
+                </h3>
               </div>
             </div>
             <div class="credit-metric-card">
@@ -362,33 +388,6 @@
       </div>
     </div>
 
-    <div id="multiplo-modal" class="modal-overlay">
-      <div class="modal-card">
-        <div class="modal-header">
-          <i class="bi bi-star-half text-warning"></i>
-          <h3>Favoritar Múltiplo</h3>
-        </div>
-        <p>Como você deseja usar este cartão Múltiplo?</p>
-        <div class="modal-actions modal-actions-col">
-          <button id="btn-multiplo-credit" class="btn-success w-100">
-            <i class="bi bi-credit-card"></i> Principal de Crédito
-          </button>
-          <button
-            id="btn-multiplo-debit"
-            class="btn-primary-modal btn-centered w-100"
-          >
-            <i class="bi bi-piggy-bank"></i> Principal de Débito
-          </button>
-          <button id="btn-multiplo-both" class="btn-dark-full">
-            <i class="bi bi-star-fill"></i> Ambas as Funções
-          </button>
-          <button id="btn-multiplo-cancel" class="btn-ghost w-100">
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div id="card-modal" class="modal-overlay">
       <div class="modal-card card-modal-style">
         <div class="modal-header-modern">
@@ -453,7 +452,6 @@
               <select id="card-type" required>
                 <option value="Crédito">Crédito</option>
                 <option value="Débito">Débito</option>
-                <option value="Múltiplo">Múltiplo (Crédito e Débito)</option>
               </select>
             </div>
           </div>

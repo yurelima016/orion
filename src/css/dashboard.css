@@ -2,6 +2,32 @@
    VIEW: DASHBOARD
    ========================================================= */
 
+.dashboard-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-privacy {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-color, #333);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-privacy:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 /* --- Filtro de Data --- */
 .date-filter-modern {
   padding: 10px 20px;
@@ -14,7 +40,10 @@
   color: #2c3e50;
   outline: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
@@ -112,6 +141,10 @@
   gap: 20px;
 }
 
+.form select {
+  cursor: pointer;
+}
+
 .form input,
 .form select {
   padding: 12px 15px;
@@ -119,7 +152,10 @@
   border-radius: 8px;
   font-size: 1rem;
   background-color: #f9f9f9;
-  transition: all 0.3s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
   outline: none;
 }
 

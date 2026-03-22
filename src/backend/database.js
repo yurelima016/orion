@@ -49,7 +49,8 @@ function initDB() {
         description TEXT NOT NULL,
         type TEXT NOT NULL CHECK(type IN ('income', 'expense')), 
         category TEXT DEFAULT 'others',
-        date TEXT NOT NULL
+        date TEXT NOT NULL,
+        card_id INTEGER
       )
     `);
 
@@ -68,6 +69,20 @@ function initDB() {
     // =======================================================
     // MIGRATIONS
     // =======================================================
+
+    // Verifica quais colunas existem na tabela transactions atualmente
+    const transactionsColumns = db
+      .prepare("PRAGMA table_info(transactions)")
+      .all()
+      .map((col) => col.name);
+
+    // Se a coluna 'card_id' não existir, cria ela agora
+    if (!transactionsColumns.includes("card_id")) {
+      db.exec("ALTER TABLE transactions ADD COLUMN card_id INTEGER");
+      console.log(
+        "Migration: Coluna 'card_id' adicionada à tabela transactions.",
+      );
+    }
 
     // Verifica quais colunas existem na tabela cards atualmente
     const cardsColumns = db

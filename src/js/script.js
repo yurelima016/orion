@@ -6,11 +6,25 @@ let currentCards = [];
 let editingTransactionId = null;
 let editingCardId = null;
 
+const bankNamesMap = {
+  nubank: "Nubank",
+  inter: "Inter",
+  c6: "C6 Bank",
+  mercado_pago: "Mercado Pago",
+  picpay: "PicPay",
+  neon: "Neon",
+  santander: "Santander",
+  itau: "Itaú",
+  bradesco: "Bradesco",
+  banco_do_brasil: "Banco do Brasil",
+  caixa: "Caixa",
+};
+
 // =========================================================
 // INICIALIZAÇÃO E NAVEGAÇÃO
 // =========================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   setupNavigation();
   setupUserProfile();
   setupPdfExport();
@@ -25,10 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSummary();
   });
 
-  loadTransactions();
-  loadSummary();
-  loadEvolutionData();
-  loadCards();
+  await loadCards();
+  await loadTransactions();
+  await loadSummary();
+  await loadEvolutionData();
+
   initTableEvents();
   initCardEvents();
   renderReportHistory();
@@ -167,6 +182,24 @@ async function loadTransactions() {
     const icon = icons[cat] || "📦";
     const colorClass = t.type === "income" ? "text-income" : "text-expense";
     const sign = t.type === "income" ? "+" : "-";
+    let paymentBadge = `<span class="badge-payment badge-cash">DINHEIRO / PIX</span>`;
+
+    if (t.card_id) {
+      const cardUsed = currentCards.find(
+        (c) => String(c.id) === String(t.card_id),
+      );
+      if (cardUsed) {
+        const bankName = cardUsed.bank_color
+          ? cardUsed.bank_color.toUpperCase().replace(/_/g, " ")
+          : "CARTÃO";
+
+        const bankClass = cardUsed.bank_color
+          ? `badge-${cardUsed.bank_color}`
+          : "badge-cash";
+
+        paymentBadge = `<span class="badge-payment ${bankClass}">${bankName}</span>`;
+      }
+    }
 
     htmlContent += `
       <tr>
@@ -174,10 +207,13 @@ async function loadTransactions() {
         <td>
             <div class="desc-wrapper">
                 <span class="icon-large">${icon}</span>
-                <span>${t.description}</span>
+                <div class="desc-text-col">
+                   <span>${t.description}</span>
+                   ${paymentBadge}
+                </div>
             </div>
         </td>
-        <td class="amount-col ${colorClass} font-bold">${sign} ${formatCurrency(t.amount)}</td>
+        <td class="amount-col ${colorClass} font-bold">${sign} <span class="privacy-sensitive">${formatCurrency(t.amount)}</span></td>
         <td>${new Date(t.date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</td>
         <td class="text-center">
           <button class="btn-edit btn-action-edit" data-id="${t.id}"><i class="bi bi-pen"></i></button>
@@ -196,13 +232,16 @@ async function loadSummary() {
   const period = document.getElementById("month-filter").value;
   const summary = await window.api.getSummary(period);
 
-  document.getElementById("saldo").textContent = formatCurrency(
-    summary.balance,
-  );
-  document.getElementById("entradas").textContent =
-    `+ ` + formatCurrency(summary.inflow || 0);
-  document.getElementById("saidas").textContent =
-    `- ` + formatCurrency(summary.outflow || 0);
+  document.getElementById("saldo").innerHTML =
+    `R$ <span class="privacy-sensitive">${formatCurrency(summary.balance).replace("R$", "").trim()}</span>`;
+  document.getElementById("entradas").innerHTML =
+    `+ R$ <span class="privacy-sensitive">${formatCurrency(summary.inflow || 0)
+      .replace("R$", "")
+      .trim()}</span>`;
+  document.getElementById("saidas").innerHTML =
+    `- R$ <span class="privacy-sensitive">${formatCurrency(summary.outflow || 0)
+      .replace("R$", "")
+      .trim()}</span>`;
 
   document.getElementById("saldo").className = "value";
   document.getElementById("entradas").className = "value text-income";
@@ -234,15 +273,70 @@ document.getElementById("save-button").addEventListener("click", async (e) => {
   const valueInput = document.getElementById("amount");
   const typeInput = document.getElementById("type");
   const catInput = document.getElementById("category");
+  const paymentMethodInput = document.getElementById("payment-method");
 
   if (!descInput.value.trim()) return setInputError(descInput);
   if (!valueInput.value) return setInputError(valueInput);
+
+  const valueTyped = Number(valueInput.value);
+  const transactionType = typeInput.value;
+  const cardId = paymentMethodInput.value;
+
+  if (transactionType === "expense" && cardId) {
+    const usedCard = currentCards.find((c) => String(c.id) === String(cardId));
+
+    if (usedCard) {
+      if (usedCard.card_type === "Débito") {
+        if (valueTyped > usedCard.account_balance) {
+          await showCustomModal(
+            "Poxa, saldo insuficiente",
+            `O valor de R$ ${valueTyped.toFixed(2)} é maior que o saldo disponível nesta conta.`,
+            "Entendi",
+            "Voltar",
+            "sad",
+          );
+          return;
+        }
+      } else if (usedCard.card_type === "Crédito") {
+        let expensesInthisMonth = currentTransactions
+          .filter(
+            (t) =>
+              String(t.card_id) === String(usedCard.id) && t.type === "expense",
+          )
+          .reduce((acc, t) => acc + Number(t.amount), 0);
+
+        if (editingTransactionId) {
+          const transactionOld = currentTransactions.find(
+            (t) => String(t.id) === String(editingTransactionId),
+          );
+          if (transactionOld) {
+            expensesInthisMonth -= Number(transactionOld.amount);
+          }
+        }
+
+        const limitAvailable =
+          Number(usedCard.limit_value) - expensesInthisMonth;
+
+        if (valueTyped > limitAvailable) {
+          await showCustomModal(
+            "Limite estourado",
+            `Parece que essa compra de R$ ${valueTyped.toFixed(2)} ultrapassa o limite disponível no cartão.`,
+            "Entendi",
+            "Voltar",
+            "sad",
+          );
+          return;
+        }
+      }
+    }
+  }
 
   const data = {
     value: Number(valueInput.value),
     description: descInput.value,
     type: typeInput.value,
     category: catInput.value,
+    card_id: paymentMethodInput.value ? Number(paymentMethodInput.value) : null,
     data: new Date().toISOString(),
   };
 
@@ -253,15 +347,17 @@ document.getElementById("save-button").addEventListener("click", async (e) => {
   if (result.success) {
     descInput.value = "";
     valueInput.value = "";
+    paymentMethodInput.value = "";
     editingTransactionId = null;
 
     const btn = document.getElementById("save-button");
     btn.innerHTML = '<i class="bi bi-check-lg"></i> Confirmar Transação';
     btn.classList.remove("edit-mode");
 
-    loadTransactions();
-    loadSummary();
-    loadEvolutionData();
+    await loadTransactions();
+    await loadSummary();
+    await loadEvolutionData();
+    await loadCards();
     descInput.focus();
   }
 });
@@ -287,6 +383,7 @@ function startEdit(t) {
   document.getElementById("amount").value = t.amount;
   document.getElementById("type").value = t.type;
   document.getElementById("category").value = t.category || "others";
+  document.getElementById("payment-method").value = t.card_id || "";
   editingTransactionId = t.id;
 
   const btnSave = document.getElementById("save-button");
@@ -298,10 +395,10 @@ function startEdit(t) {
 async function deleteItem(id) {
   if (
     await showCustomModal(
-      "Excluir movimentação?",
-      "Deseja excluir esse item das transações?",
-      "Sim, excluir",
-      "Cancelar",
+      "Apagar transação?",
+      "Tem certeza? Esta ação removerá o registro e afetará o saldo do seu Dashboard.",
+      "Sim, apagar",
+      "Manter",
       "danger",
     )
   ) {
@@ -347,10 +444,10 @@ document
     if (
       selected.length > 0 &&
       (await showCustomModal(
-        "Excluir Vários?",
-        "Excluir as transações selecionadas?",
-        "Sim, excluir",
-        "Cancelar",
+        "Apagar Transações?",
+        "Tem certeza? Esta ação removerá os registros selecionados e afetará o saldo do seu Dashboard.",
+        "Sim, apagar",
+        "Manter",
         "danger",
       ))
     ) {
@@ -379,15 +476,15 @@ async function loadCards() {
     (acc, c) => acc + Number(c.limit_value || 0),
     0,
   );
-  document.getElementById("total-limit-display").textContent =
-    formatCurrency(totalLimit);
+  document.getElementById("total-limit-display").innerHTML =
+    `R$ <span class="privacy-sensitive">${formatCurrency(totalLimit).replace("R$", "").trim()}</span>`;
 
   let totalBalance = currentCards.reduce(
     (acc, c) => acc + Number(c.account_balance || 0),
     0,
   );
-  document.getElementById("total-balance-display").textContent =
-    formatCurrency(totalBalance);
+  document.getElementById("total-balance-display").innerHTML =
+    `R$ <span class="privacy-sensitive">${formatCurrency(totalBalance).replace("R$", "").trim()}</span>`;
 
   document.getElementById("total-cards-display").textContent =
     currentCards.length;
@@ -446,25 +543,12 @@ async function loadCards() {
       detailsHtml = `
         <div><span class="card-label">TITULAR</span><br><strong>${card.name.toUpperCase()}</strong></div>
         <div class="text-right"><span class="card-label">CONTA</span><br><strong>${(card.account_type || "CORRENTE").toUpperCase()}</strong></div>`;
-      limitHtml = `<span>Saldo Atual</span><strong>${formatCurrency(card.account_balance || 0)}</strong>`;
+      limitHtml = `<span>Saldo Atual</span><strong><span class="privacy-sensitive">${formatCurrency(card.account_balance || 0)}</span></strong>`;
     } else if (tipo === "CRÉDITO") {
       detailsHtml = `
         <div><span class="card-label">TITULAR</span><br><strong>${card.name.toUpperCase()}</strong></div>
         <div class="text-right"><span class="card-label">FECHAMENTO</span><br><strong>Dia ${String(card.day_expiry).padStart(2, "0")}</strong></div>`;
-      limitHtml = `<span>Limite Total</span><strong>${formatCurrency(card.limit_value)}</strong>`;
-    } else {
-      detailsHtml = `
-        <div><span class="card-label">TITULAR</span><br><strong>${card.name.toUpperCase()}</strong></div>
-        <div class="text-right"><span class="card-label">FECHAMENTO</span><br><strong>Dia ${String(card.day_expiry).padStart(2, "0")}</strong></div>`;
-      limitHtml = `
-        <div class="multiplo-col-left">
-          <span class="multiplo-label">Limite Crédito</span>
-          <strong class="multiplo-value">${formatCurrency(card.limit_value)}</strong>
-        </div>
-        <div class="multiplo-col-right">
-          <span class="multiplo-label">Saldo ${card.account_type || "Conta"}</span>
-          <strong class="multiplo-value">${formatCurrency(card.account_balance || 0)}</strong>
-        </div>`;
+      limitHtml = `<span>Limite Total</span><strong><span class="privacy-sensitive">${formatCurrency(card.limit_value)}</span></strong>`;
     }
 
     cardsHtml += `
@@ -494,6 +578,31 @@ async function loadCards() {
   });
 
   container.innerHTML = cardsHtml;
+  populatePaymentMethods(mainCreditId, mainDebitId);
+}
+
+function populatePaymentMethods(mainCreditId, mainDebitId) {
+  const select = document.getElementById("payment-method");
+  if (!select) return;
+
+  const currentValue = select.value;
+
+  let optionsHtml = '<option value="">💵 Dinheiro</option>';
+
+  currentCards.forEach((card) => {
+    const bankName = bankNamesMap[card.bank_color] || "Cartão";
+
+    const isMain =
+      String(card.id) === String(mainCreditId) ||
+      String(card.id) === String(mainDebitId);
+
+    const emoji = isMain ? "⭐" : "💳";
+
+    optionsHtml += `<option value="${card.id}">${emoji} ${bankName} (Final ${card.last_digits})</option>`;
+  });
+
+  select.innerHTML = optionsHtml;
+  select.value = currentValue;
 }
 
 function initCardEvents() {
@@ -528,11 +637,11 @@ function initCardEvents() {
         if (String(id) === String(currentMainCredit)) return;
         if (
           await showCustomModal(
-            "Cartão Principal",
-            "Definir este cartão como principal de Crédito?",
-            "Confirmar",
-            "Voltar",
-            "success",
+            "Novo favorito?",
+            "Deseja que este seja o seu cartão padrão para novas compras no Crédito?",
+            "Sim, favoritar",
+            "Ainda não",
+            "question",
           )
         ) {
           await window.api.saveSetting("orion_main_credit_card", String(id));
@@ -542,18 +651,16 @@ function initCardEvents() {
         if (String(id) === String(currentMainDebit)) return;
         if (
           await showCustomModal(
-            "Cartão Principal",
-            "Definir este cartão como principal de Débito?",
-            "Confirmar",
-            "Voltar",
-            "success",
+            "Novo favorito?",
+            "Deseja que este seja o seu cartão padrão para novas compras no Débito?",
+            "Sim, favoritar",
+            "Ainda não",
+            "question",
           )
         ) {
           await window.api.saveSetting("orion_main_debit_card", String(id));
           loadCards();
         }
-      } else {
-        openMultiploStarModal(id);
       }
     }
   });
@@ -579,12 +686,6 @@ function toggleCardInputs() {
     limitInput.required = true;
     expiryInput.required = true;
     balanceInput.required = false;
-  } else {
-    rowCredit.classList.remove("d-none");
-    rowDebit.classList.remove("d-none");
-    limitInput.required = true;
-    expiryInput.required = true;
-    balanceInput.required = true;
   }
 }
 
@@ -656,10 +757,10 @@ document.getElementById("card-form").addEventListener("submit", async (e) => {
 async function removeCard(id) {
   if (
     await showCustomModal(
-      "Excluir Cartão?",
-      "Remover este cartão da carteira?",
-      "Remover",
-      "Cancelar",
+      "Remover da carteira?",
+      "Ao excluir este cartão, ele não estará mais disponível para novas transações. Deseja continuar?",
+      "Sim, excluir",
+      "Manter cartão",
       "danger",
     )
   ) {
@@ -804,9 +905,9 @@ async function renderReportHistory() {
 window.clearReportHistory = async function () {
   if (
     await showCustomModal(
-      "Limpar?",
-      "Apagar histórico de relatórios?",
-      "Limpar",
+      "Limpar histórico?",
+      "Isso apagará seus atalhos de relatórios recentes. Deseja continuar?",
+      "Sim, limpar",
       "Cancelar",
       "danger",
     )
