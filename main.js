@@ -8,9 +8,12 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    minWidth: 1000,
+    minHeight: 800,
     show: false,
     frame: false,
     autoHideMenuBar: true,
+    icon: path.join(__dirname, "assets/orion-icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "src/preload.js"),
       nodeIntegration: false,

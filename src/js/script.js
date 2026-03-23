@@ -182,7 +182,7 @@ async function loadTransactions() {
     const icon = icons[cat] || "📦";
     const colorClass = t.type === "income" ? "text-income" : "text-expense";
     const sign = t.type === "income" ? "+" : "-";
-    let paymentBadge = `<span class="badge-payment badge-cash">DINHEIRO / PIX</span>`;
+    let paymentBadge = `<span class="badge-payment badge-payment-cash">DINHEIRO / PIX</span>`;
 
     if (t.card_id) {
       const cardUsed = currentCards.find(
@@ -195,7 +195,7 @@ async function loadTransactions() {
 
         const bankClass = cardUsed.bank_color
           ? `badge-${cardUsed.bank_color}`
-          : "badge-cash";
+          : "badge-payment-cash";
 
         paymentBadge = `<span class="badge-payment ${bankClass}">${bankName}</span>`;
       }
@@ -773,57 +773,73 @@ async function removeCard(id) {
 // RELATÓRIOS
 // =========================================================
 
-document
-  .getElementById("btn-generate-report")
-  .addEventListener("click", async () => {
-    const start = document.getElementById("report-start").value;
-    const end = document.getElementById("report-end").value;
-    const type = document.getElementById("report-type").value;
+let activeReportKey = null; // Variável para controlar o relatório visível na prancheta
 
-    if (!start || !end) return;
+// 1. Função Central que processa e desenha a prancheta
+async function loadReportView(start, end, type, isNewSearch = true) {
+  if (!start || !end) return;
 
+  const reportKey = `${start}|${end}|${type}`;
+
+  // LÓGICA DE TOGGLE: Se clicou no histórico no mesmo relatório já aberto, esconde tudo e sai.
+  if (
+    !isNewSearch &&
+    activeReportKey === reportKey &&
+    !document.getElementById("report-content").classList.contains("d-none")
+  ) {
+    document.getElementById("report-content").classList.add("d-none");
+    document.getElementById("btn-export-pdf").classList.add("d-none");
+    activeReportKey = null; // Reseta o estado
+
+    // Remove o destaque visual dos cards
+    document
+      .querySelectorAll(".history-card")
+      .forEach((c) => c.classList.remove("active-history"));
+    return;
+  }
+
+  // Se for pesquisa nova no botão "Filtrar", salva no banco de dados
+  if (isNewSearch) {
     await saveReportToHistory(start, end, type);
+  }
 
-    const data = await window.api.getReportData(start, end);
-    let filtered = data.transactions;
-    if (type !== "all") filtered = filtered.filter((t) => t.type === type);
+  // Define o relatório atual como o ativo
+  activeReportKey = reportKey;
 
-    const { inflow, outflow, balance } = data.summary;
+  const endQuery = end + "T23:59:59.999Z";
+  const data = await window.api.getReportData(start, endQuery);
+  let filtered = data.transactions;
+  if (type !== "all") filtered = filtered.filter((t) => t.type === type);
 
-    document.getElementById("report-inflow").textContent =
-      formatCurrency(inflow);
-    document.getElementById("report-outflow").textContent =
-      formatCurrency(outflow);
-    document.getElementById("report-balance").textContent =
-      formatCurrency(balance);
+  const { inflow, outflow, balance } = data.summary;
 
-    const tbody = document.getElementById("report-table-body");
-    const icons = {
-      others: "📦",
-      food: "🍔",
-      home: "🏠",
-      transport: "🚗",
-      leisure: "🎉",
-      work: "💼",
-    };
+  const tbody = document.getElementById("report-table-body");
+  const icons = {
+    others: "📦",
+    food: "🍔",
+    home: "🏠",
+    transport: "🚗",
+    leisure: "🎉",
+    work: "💼",
+  };
 
-    let tbodyHtml = "";
-    filtered.forEach((t) => {
-      const cat = t.category || "others";
-      const info = categoryMap[cat] || categoryMap.others;
-      const colorClass = t.type === "income" ? "text-income" : "text-expense";
+  let tbodyHtml = "";
+  filtered.forEach((t) => {
+    const cat = t.category || "others";
+    const info = categoryMap[cat] || categoryMap.others;
+    const colorClass = t.type === "income" ? "text-income" : "text-expense";
 
-      tbodyHtml += `
+    tbodyHtml += `
       <tr>
         <td>${new Date(t.date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</td>
         <td><span class="category-badge badge-${cat}">${icons[cat] || "📦"} ${info.label}</span></td>
         <td>${t.description}</td>
         <td class="${colorClass} font-bold">${t.type === "income" ? "+" : "-"} ${formatCurrency(t.amount)}</td>
       </tr>`;
-    });
-    tbody.innerHTML = tbodyHtml;
+  });
+  tbody.innerHTML = tbodyHtml;
 
-    document.getElementById("report-summary-area").innerHTML = `
+  document.getElementById("report-summary-area").innerHTML = `
     <div class="summary-col">
       <div class="summary-card border-income">
         <h3 class="summary-label">Entradas</h3>
@@ -846,22 +862,49 @@ document
     </div>
   `;
 
-    renderReportChart(filtered);
+  renderReportChart(filtered);
 
-    document.getElementById("report-summary-area").classList.remove("d-none");
-    document.getElementById("report-content").classList.remove("d-none");
-    document.getElementById("btn-export-pdf").classList.remove("d-none");
+  document.getElementById("report-summary-area").classList.remove("d-none");
+  document.getElementById("report-content").classList.remove("d-none");
+  document.getElementById("btn-export-pdf").classList.remove("d-none");
 
-    const labelMap = {
-      all: "Todas",
-      income: "Apenas Entradas",
-      expense: "Apenas Saídas",
-    };
-    document.getElementById("report-period-label").textContent =
-      `Período: ${new Date(start).toLocaleDateString("pt-BR")} até ${new Date(end).toLocaleDateString("pt-BR")} (${labelMap[type]})`;
+  const labelMap = {
+    all: "Todas",
+    income: "Apenas Entradas",
+    expense: "Apenas Saídas",
+  };
+  document.getElementById("report-period-label").textContent =
+    `Período: ${new Date(start).toLocaleDateString("pt-BR")} até ${new Date(end).toLocaleDateString("pt-BR")} (${labelMap[type]})`;
+
+  // Destaca o card do histórico que acabou de ser aberto
+  document.querySelectorAll(".history-card").forEach((c) => {
+    const cKey = `${c.dataset.start}|${c.dataset.end}|${c.dataset.type}`;
+    if (cKey === activeReportKey) {
+      c.classList.add("active-history");
+    } else {
+      c.classList.remove("active-history");
+    }
+  });
+}
+
+// 2. Evento do Botão "Filtrar"
+document
+  .getElementById("btn-generate-report")
+  .addEventListener("click", async () => {
+    const start = document.getElementById("report-start").value;
+    const end = document.getElementById("report-end").value;
+    const type = document.getElementById("report-type").value;
+
+    if (!start || !end) {
+      setInputError(document.getElementById("report-start"));
+      setInputError(document.getElementById("report-end"));
+      return;
+    }
+
+    await loadReportView(start, end, type, true);
   });
 
-// Histórico de Relatórios
+// 3. Histórico de Relatórios
 async function saveReportToHistory(start, end, type) {
   await window.api.saveReportHistory({ start, end, type });
   await renderReportHistory();
@@ -873,7 +916,7 @@ async function renderReportHistory() {
 
   if (history.length === 0) {
     container.innerHTML =
-      '<p class="history-empty">Nenhum histórico recente.</p>';
+      '<p class="text-muted-italic w-100">Nenhum histórico recente.</p>';
     return;
   }
 
@@ -881,9 +924,17 @@ async function renderReportHistory() {
   let historyHtml = "";
 
   history.forEach((item) => {
+    const itemKey = `${item.start_date}|${item.end_date}|${item.type}`;
+    // Se o card sendo desenhado for o relatório ativo no momento, já coloca a classe nele
+    const activeClass =
+      itemKey === activeReportKey &&
+      !document.getElementById("report-content").classList.contains("d-none")
+        ? "active-history"
+        : "";
+
     historyHtml += `
-      <div class="history-card" data-start="${item.start_date}" data-end="${item.end_date}" data-type="${item.type}">
-        <div class="history-card-header"><i class="bi bi-file-earmark-text"></i> <small>Reutilizar</small></div>
+      <div class="history-card ${activeClass}" data-start="${item.start_date}" data-end="${item.end_date}" data-type="${item.type}">
+        <div class="history-card-header"><i class="bi bi-file-earmark-text"></i> <small>Visualizar</small></div>
         <div class="history-period">${new Date(item.start_date).toLocaleDateString("pt-BR", { timeZone: "UTC" })} - ${new Date(item.end_date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</div>
         <div class="history-type">${types[item.type]}</div>
       </div>
@@ -892,16 +943,24 @@ async function renderReportHistory() {
 
   container.innerHTML = historyHtml;
 
+  // 4. Clique nos cards de histórico
   container.querySelectorAll(".history-card").forEach((card) => {
-    card.addEventListener("click", () => {
+    card.addEventListener("click", async () => {
       document.getElementById("report-start").value = card.dataset.start;
       document.getElementById("report-end").value = card.dataset.end;
       document.getElementById("report-type").value = card.dataset.type;
-      document.getElementById("btn-generate-report").click();
+
+      await loadReportView(
+        card.dataset.start,
+        card.dataset.end,
+        card.dataset.type,
+        false,
+      );
     });
   });
 }
 
+// 5. Botão Limpar Histórico
 window.clearReportHistory = async function () {
   if (
     await showCustomModal(
@@ -914,5 +973,9 @@ window.clearReportHistory = async function () {
   ) {
     await window.api.clearReportHistory();
     await renderReportHistory();
+
+    document.getElementById("report-content").classList.add("d-none");
+    document.getElementById("btn-export-pdf").classList.add("d-none");
+    activeReportKey = null; // Limpa o rastro do ativo
   }
 };

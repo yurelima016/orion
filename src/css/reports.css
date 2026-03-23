@@ -239,7 +239,8 @@
 
 .clipboard {
   position: relative;
-  width: 900px;
+  width: 100%;
+  max-width: 900px;
   background-color: #b76e3e;
   padding: 50px 0;
   border-radius: 15px;
@@ -306,7 +307,7 @@
 }
 
 .paper {
-  width: 800px;
+  width: 95%;
   background-color: #f0f2f5;
   padding: 50px 15px 15px 15px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -322,7 +323,7 @@
 }
 
 .paper header h2 {
-  width: 740px;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -335,4 +336,93 @@
 #report-summary-area .card,
 #report-summary-area canvas {
   width: 100% !important;
+}
+
+/* =========================================================
+   ESTRUTURA INJETADA PELO JS (Resumo e Gráfico)
+   ========================================================= */
+
+.report-summary-flex {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  align-items: center;
+}
+
+.summary-col {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+}
+
+.summary-card {
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border-left: 4px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.border-income {
+  border-left-color: #27ae60;
+}
+.border-expense {
+  border-left-color: #c0392b;
+}
+.border-balance {
+  border-left-color: #2980b9;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin: 0 0 5px 0;
+  text-transform: uppercase;
+}
+
+.summary-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.summary-value.income {
+  color: #27ae60;
+}
+.summary-value.expense {
+  color: #c0392b;
+}
+.summary-value.balance {
+  color: #2980b9;
+}
+
+.report-chart-box {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.report-chart-title {
+  font-size: 1rem;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+}
+
+.report-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px; /* Vital para o Chart.js não colapsar e sumir */
+}
+
+.history-card.active-history {
+  border-color: #3498db;
+  background-color: #f1f8fc; /* Fundo azulzinho bem suave */
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.15);
+  transform: translateY(-3px);
 }
