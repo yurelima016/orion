@@ -1,3 +1,7 @@
+// =========================================================
+// PONTE DE COMUNICAÇÃO (IPC BRIDGE)
+// =========================================================
+
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
@@ -30,15 +34,14 @@ contextBridge.exposeInMainWorld("api", {
   clearReportHistory: () => ipcRenderer.invoke("clear-report-history"),
 
   // ==========================================
-  // CONFIGURAÇÕES (Settings)
+  // CONFIGURAÇÕES (Settings globais do App)
   // ==========================================
   getSetting: (key) => ipcRenderer.invoke("get-setting", key),
   saveSetting: (key, value) => ipcRenderer.invoke("save-setting", key, value),
 
   // ==========================================
-  // CONTROLES DE JANELA
+  // CONTROLES DE JANELA (Custom Title Bar)
   // ==========================================
-
   windowMinimize: () => ipcRenderer.send("window-minimize"),
   windowMaximize: () => ipcRenderer.send("window-maximize"),
   windowClose: () => ipcRenderer.send("window-close"),

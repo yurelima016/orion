@@ -4,7 +4,6 @@
 :root {
   /* Dimensões Base */
   --sidebar-width: 250px;
-  --topbar-drag-height: 40px;
 
   /* Cores Base do Tema Light */
   --bg-main: #f0f2f5;
@@ -65,7 +64,7 @@ button {
 }
 
 /* =========================================================
-   SCROLLBAR CUSTOMIZADA
+   CUSTOM SCROLLBAR
    ========================================================= */
 ::-webkit-scrollbar {
   width: 8px;
@@ -87,7 +86,7 @@ button {
 }
 
 /* =========================================================
-   CUSTOM TITLE BAR (Controles de Janela)
+   CUSTOM TITLE BAR 
    ========================================================= */
 
 .custom-title-bar {
@@ -105,11 +104,11 @@ button {
 .title-bar-drag-area {
   flex-grow: 1;
   -webkit-app-region: drag;
+  user-select: none;
 }
 
 .window-controls {
   display: flex;
-  -webkit-app-region: no-drag;
 }
 
 .control-btn {
@@ -126,6 +125,7 @@ button {
     background-color 0.2s,
     color 0.2s;
   outline: none;
+  cursor: pointer;
 }
 
 .control-btn i {
@@ -146,16 +146,6 @@ button {
    MODO DE PRIVACIDADE
    ========================================================= */
 
-body.privacy-mode .privacy-sensitive {
-  filter: blur(6px);
-  opacity: 0.6;
-  user-select: none;
-  pointer-events: none;
-  transition:
-    filter 0.3s ease,
-    opacity 0.3s ease;
-}
-
 .privacy-sensitive {
   transition:
     filter 0.3s ease,
@@ -163,4 +153,11 @@ body.privacy-mode .privacy-sensitive {
   font-size: inherit !important;
   font-weight: inherit !important;
   color: inherit !important;
+}
+
+body.privacy-mode .privacy-sensitive {
+  filter: blur(6px);
+  opacity: 0.6;
+  user-select: none;
+  pointer-events: none;
 }

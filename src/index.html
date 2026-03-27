@@ -13,7 +13,7 @@
     connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
   "
     />
-    <title>Orion Finance</title>
+    <title>Orion</title>
 
     <link
       rel="stylesheet"
@@ -29,48 +29,71 @@
   </head>
   <body>
     <div class="app-container">
-      <nav class="sidebar">
+      <nav class="sidebar" aria-label="Navegação Principal">
         <img src="../assets/orion.svg" alt="Logo Orion" id="logo" />
         <ul>
           <li>
             <a href="#" id="link-dashboard" class="active">
-              <i class="bi bi-bar-chart-fill"></i> Dashboard
+              <i class="bi bi-bar-chart-fill" aria-hidden="true"></i> Dashboard
             </a>
           </li>
           <li>
             <a href="#" id="link-cards">
-              <i class="bi bi-wallet"></i> Carteira
+              <i class="bi bi-wallet" aria-hidden="true"></i> Carteira
             </a>
           </li>
           <li>
             <a href="#" id="link-reports">
-              <i class="bi bi-clipboard2-data"></i> Relatórios
+              <i class="bi bi-clipboard2-data" aria-hidden="true"></i>
+              Relatórios
             </a>
           </li>
         </ul>
         <div class="user-profile">
           <div class="user-info">
-            <i class="bi bi-person-circle"></i> <span></span>
+            <i class="bi bi-person-circle" aria-hidden="true"></i> <span></span>
           </div>
-          <a href="#" class="edit-user-btn" title="Editar Nome">
-            <i class="bi bi-pencil-square"></i>
+          <a
+            href="#"
+            class="edit-user-btn"
+            title="Editar Nome"
+            aria-label="Editar nome de usuário"
+          >
+            <i class="bi bi-pencil-square" aria-hidden="true"></i>
           </a>
         </div>
       </nav>
 
       <main class="content">
-        <!-- Barra de controle (min/max/close buttons) -->
         <div class="custom-title-bar">
           <div class="title-bar-drag-area"></div>
           <div class="window-controls">
-            <button id="btn-minimize" class="control-btn" title="Minimizar">
-              <i class="bi bi-dash-lg"></i>
+            <button
+              id="btn-minimize"
+              class="control-btn"
+              title="Minimizar"
+              type="button"
+              aria-label="Minimizar janela"
+            >
+              <i class="bi bi-dash-lg" aria-hidden="true"></i>
             </button>
-            <button id="btn-maximize" class="control-btn" title="Maximizar">
-              <i class="bi bi-square"></i>
+            <button
+              id="btn-maximize"
+              class="control-btn"
+              title="Maximizar"
+              type="button"
+              aria-label="Maximizar ou Restaurar janela"
+            >
+              <i class="bi bi-square" aria-hidden="true"></i>
             </button>
-            <button id="btn-close" class="control-btn close-btn" title="Fechar">
-              <i class="bi bi-x-lg"></i>
+            <button
+              id="btn-close"
+              class="control-btn close-btn"
+              title="Fechar"
+              type="button"
+              aria-label="Fechar aplicativo"
+            >
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -83,13 +106,16 @@
                 id="toggle-privacy"
                 class="btn-privacy"
                 title="Ocultar/Mostrar Valores"
+                type="button"
+                aria-label="Alternar privacidade dos valores"
               >
-                <i id="privacy-icon" class="bi bi-eye"></i>
+                <i id="privacy-icon" class="bi bi-eye" aria-hidden="true"></i>
               </button>
               <input
                 type="month"
                 id="month-filter"
                 class="date-filter-modern"
+                aria-label="Filtrar por mês"
               />
             </div>
           </header>
@@ -191,25 +217,32 @@
               </div>
             </div>
             <button type="submit" id="save-button">
-              <i class="bi bi-check-lg"></i> Confirmar Transação
+              <i class="bi bi-check-lg" aria-hidden="true"></i> Confirmar
+              Transação
             </button>
           </form>
 
           <div class="transactions-list">
             <div class="list-header flex-between-center mb-15">
               <h3>Últimas Transações</h3>
-              <button id="btn-bulk-delete" class="btn-danger-soft d-none">
-                <i class="bi bi-trash3-fill"></i> Excluir (<span
-                  id="selected-count"
-                  >0</span
-                >)
+              <button
+                id="btn-bulk-delete"
+                class="btn-danger-soft d-none"
+                type="button"
+              >
+                <i class="bi bi-trash3-fill" aria-hidden="true"></i> Excluir
+                (<span id="selected-count">0</span>)
               </button>
             </div>
             <table>
               <thead>
                 <tr>
                   <th class="col-checkbox text-center">
-                    <input type="checkbox" id="select-all" />
+                    <input
+                      type="checkbox"
+                      id="select-all"
+                      aria-label="Selecionar todos"
+                    />
                   </th>
                   <th>Descrição</th>
                   <th>Valor</th>
@@ -230,7 +263,7 @@
           <div class="credit-summary-row">
             <div class="credit-metric-card">
               <div class="icon-box">
-                <i class="bi bi-wallet2"></i>
+                <i class="bi bi-wallet2" aria-hidden="true"></i>
               </div>
               <div class="text-box">
                 <span>Limite Global</span>
@@ -241,7 +274,7 @@
             </div>
             <div class="credit-metric-card">
               <div class="icon-box icon-box-warning">
-                <i class="bi bi-piggy-bank"></i>
+                <i class="bi bi-piggy-bank" aria-hidden="true"></i>
               </div>
               <div class="text-box">
                 <span>Saldo Global</span>
@@ -252,7 +285,7 @@
             </div>
             <div class="credit-metric-card">
               <div class="icon-box icon-box-danger">
-                <i class="bi bi-credit-card"></i>
+                <i class="bi bi-credit-card" aria-hidden="true"></i>
               </div>
               <div class="text-box">
                 <span>Cartões Salvos</span>
@@ -261,7 +294,7 @@
             </div>
             <div class="credit-metric-card">
               <div class="icon-box icon-box-success">
-                <i class="bi bi-calendar-check"></i>
+                <i class="bi bi-calendar-check" aria-hidden="true"></i>
               </div>
               <div class="text-box">
                 <span>Melhor Dia Compra</span>
@@ -279,9 +312,9 @@
 
           <div class="reports-toolbar">
             <div class="filter-item">
-              <label>De (Início)</label>
+              <label for="report-start">De (Início)</label>
               <div class="input-wrapper-toolbar">
-                <i class="bi bi-calendar-event"></i>
+                <i class="bi bi-calendar-event" aria-hidden="true"></i>
                 <input
                   type="date"
                   id="report-start"
@@ -290,9 +323,9 @@
               </div>
             </div>
             <div class="filter-item">
-              <label>Até (Fim)</label>
+              <label for="report-end">Até (Fim)</label>
               <div class="input-wrapper-toolbar">
-                <i class="bi bi-calendar-check-fill"></i>
+                <i class="bi bi-calendar-check-fill" aria-hidden="true"></i>
                 <input
                   type="date"
                   id="report-end"
@@ -301,9 +334,9 @@
               </div>
             </div>
             <div class="filter-item">
-              <label>Movimentação</label>
+              <label for="report-type">Movimentação</label>
               <div class="input-wrapper-toolbar">
-                <i class="bi bi-funnel-fill"></i>
+                <i class="bi bi-funnel-fill" aria-hidden="true"></i>
                 <select id="report-type" class="modern-input-toolbar">
                   <option value="all">Todas</option>
                   <option value="income">Entradas</option>
@@ -312,19 +345,35 @@
               </div>
             </div>
             <div class="actions-group">
-              <button id="btn-generate-report" class="btn-primary-toolbar">
-                <i class="bi bi-search"></i> Gerar
+              <button
+                id="btn-generate-report"
+                class="btn-primary-toolbar"
+                type="button"
+              >
+                <i class="bi bi-search" aria-hidden="true"></i> Gerar
               </button>
-              <button id="btn-export-pdf" class="btn-secondary-toolbar d-none">
-                <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+              <button
+                id="btn-export-pdf"
+                class="btn-secondary-toolbar d-none"
+                type="button"
+              >
+                <i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i>
+                PDF
               </button>
             </div>
           </div>
 
           <div id="history-container" class="history-section">
             <div class="history-header">
-              <h3><i class="bi bi-clock-history"></i> Últimos Relatórios</h3>
-              <button onclick="clearReportHistory()" class="btn-clear-history">
+              <h3>
+                <i class="bi bi-clock-history" aria-hidden="true"></i> Últimos
+                Relatórios
+              </h3>
+              <button
+                onclick="clearReportHistory()"
+                class="btn-clear-history"
+                type="button"
+              >
                 Limpar Histórico
               </button>
             </div>
@@ -382,8 +431,12 @@
         </div>
         <p>Você deseja realmente excluir? Essa ação não pode ser desfeita.</p>
         <div class="modal-actions">
-          <button id="btn-cancel-modal" class="btn-secondary"></button>
-          <button id="btn-confirm-modal"></button>
+          <button
+            id="btn-cancel-modal"
+            class="btn-secondary"
+            type="button"
+          ></button>
+          <button id="btn-confirm-modal" type="button"></button>
         </div>
       </div>
     </div>
@@ -392,7 +445,7 @@
       <div class="modal-card card-modal-style">
         <div class="modal-header-modern">
           <div class="icon-circle">
-            <i class="bi bi-credit-card-2-front-fill"></i>
+            <i class="bi bi-credit-card-2-front-fill" aria-hidden="true"></i>
           </div>
           <h3>Novo Cartão</h3>
           <p>Preencha os dados para controlar suas faturas</p>
@@ -400,9 +453,9 @@
 
         <form id="card-form" class="modern-form-modal">
           <div class="input-group full-width">
-            <label>Titular</label>
+            <label for="card-name">Titular</label>
             <div class="input-wrapper">
-              <i class="bi bi-tag input-icon"></i>
+              <i class="bi bi-tag input-icon" aria-hidden="true"></i>
               <input
                 type="text"
                 id="card-name"
@@ -413,9 +466,9 @@
           </div>
           <div class="form-row">
             <div class="input-group">
-              <label>Final (4 dígitos)</label>
+              <label for="card-last-digits">Final (4 dígitos)</label>
               <div class="input-wrapper">
-                <i class="bi bi-123 input-icon"></i>
+                <i class="bi bi-123 input-icon" aria-hidden="true"></i>
                 <input
                   type="text"
                   id="card-last-digits"
@@ -426,9 +479,9 @@
               </div>
             </div>
             <div class="input-group">
-              <label>Cartão</label>
+              <label for="card-bank">Cartão</label>
               <div class="input-wrapper">
-                <i class="bi bi-bank input-icon"></i>
+                <i class="bi bi-bank input-icon" aria-hidden="true"></i>
                 <select id="card-bank">
                   <option value="nubank">Nubank</option>
                   <option value="inter">Inter</option>
@@ -446,9 +499,12 @@
             </div>
           </div>
           <div class="input-group full-width mb-15">
-            <label>Tipo do Cartão</label>
+            <label for="card-type">Tipo do Cartão</label>
             <div class="input-wrapper">
-              <i class="bi bi-credit-card-2-front input-icon"></i>
+              <i
+                class="bi bi-credit-card-2-front input-icon"
+                aria-hidden="true"
+              ></i>
               <select id="card-type" required>
                 <option value="Crédito">Crédito</option>
                 <option value="Débito">Débito</option>
@@ -457,7 +513,7 @@
           </div>
           <div class="form-row" id="row-credit">
             <div class="input-group">
-              <label>Limite Total</label>
+              <label for="card-limit">Limite Total</label>
               <div class="input-wrapper">
                 <span class="currency-symbol">R$</span>
                 <input
@@ -469,9 +525,12 @@
               </div>
             </div>
             <div class="input-group">
-              <label>Dia de Fechamento</label>
+              <label for="card-expiry">Dia de Fechamento</label>
               <div class="input-wrapper">
-                <i class="bi bi-calendar-event input-icon"></i>
+                <i
+                  class="bi bi-calendar-event input-icon"
+                  aria-hidden="true"
+                ></i>
                 <input
                   type="number"
                   id="card-expiry"
@@ -483,7 +542,7 @@
           </div>
           <div class="form-row d-none" id="row-debit">
             <div class="input-group">
-              <label>Saldo Atual</label>
+              <label for="debit-balance">Saldo Atual</label>
               <div class="input-wrapper">
                 <span class="currency-symbol">R$</span>
                 <input
@@ -495,9 +554,9 @@
               </div>
             </div>
             <div class="input-group">
-              <label>Tipo de Conta</label>
+              <label for="debit-type">Tipo de Conta</label>
               <div class="input-wrapper">
-                <i class="bi bi-piggy-bank input-icon"></i>
+                <i class="bi bi-piggy-bank input-icon" aria-hidden="true"></i>
                 <select id="debit-type">
                   <option value="Corrente">Corrente</option>
                   <option value="Poupança">Poupança</option>
@@ -510,7 +569,7 @@
               Cancelar
             </button>
             <button type="submit" class="btn-primary-modal">
-              <i class="bi bi-check2"></i> Salvar Cartão
+              <i class="bi bi-check2" aria-hidden="true"></i> Salvar Cartão
             </button>
           </div>
         </form>

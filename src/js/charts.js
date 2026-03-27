@@ -1,3 +1,7 @@
+/* =========================================================
+   GRÁFICOS
+   ========================================================= */
+
 // Instâncias Globais dos Gráficos
 let categoryChartInstance = null;
 let dailyChartInstance = null;
@@ -5,7 +9,7 @@ let reportChartInstance = null;
 let evolutionChartInstance = null;
 
 // =========================================================
-// GRÁFICO DE BARRAS (Categorias)
+// GRÁFICO DE BARRAS (Gastos por Categoria)
 // =========================================================
 function renderCategoryChart(transactions) {
   const ctx = document.getElementById("category-chart");
@@ -57,17 +61,22 @@ function renderCategoryChart(transactions) {
 }
 
 // =========================================================
-// GRÁFICO DE BARRAS (Diário)
+// GRÁFICO DE BARRAS (Gastos Diários)
 // =========================================================
 function renderDailyChart(transactions) {
   const ctx = document.getElementById("daily-chart");
 
+  const monthFilter = document.getElementById("month-filter");
   let daysInCurrentMonth = 31;
-  if (transactions.length > 0) {
-    const sampleDate = new Date(transactions[0].date);
+
+  if (monthFilter && monthFilter.value) {
+    const [yearStr, monthStr] = monthFilter.value.split("-");
+    daysInCurrentMonth = new Date(yearStr, monthStr, 0).getDate();
+  } else {
+    const today = new Date();
     daysInCurrentMonth = new Date(
-      sampleDate.getFullYear(),
-      sampleDate.getMonth() + 1,
+      today.getFullYear(),
+      today.getMonth() + 1,
       0,
     ).getDate();
   }
@@ -81,7 +90,10 @@ function renderDailyChart(transactions) {
   transactions.forEach((t) => {
     if (t.type === "expense") {
       const dateObj = new Date(t.date);
-      const day = dateObj.getUTCDate();
+      const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
+      const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
+      const day = localDate.getDate();
+
       if (day >= 1 && day <= daysInCurrentMonth) {
         dailyTotals[day - 1] += Number(t.amount);
       }
@@ -114,7 +126,7 @@ function renderDailyChart(transactions) {
 }
 
 // =========================================================
-// GRÁFICO DE LINHA (Evolução 6 Meses)
+// GRÁFICO DE LINHA (Evolução Mensal)
 // =========================================================
 function renderEvolutionChart(labels, incomes, expenses) {
   const ctx = document.getElementById("evolution-chart");
@@ -154,7 +166,7 @@ function renderEvolutionChart(labels, incomes, expenses) {
 }
 
 // =========================================================
-// GRÁFICO DE ROSCA (Relatório)
+// GRÁFICO DE ROSCA (Relatórios)
 // =========================================================
 function renderReportChart(transactions) {
   const ctx = document.getElementById("report-chart");
@@ -167,7 +179,7 @@ function renderReportChart(transactions) {
 
   const totals = expenses.reduce((acc, curr) => {
     const cat = curr.category || "others";
-    acc[cat] = (acc[cat] || 0) + curr.amount;
+    acc[cat] = (acc[cat] || 0) + Number(curr.amount);
     return acc;
   }, {});
 

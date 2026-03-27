@@ -1,21 +1,23 @@
+/* =========================================================
+   GERADOR DE PDF
+   ========================================================= */
 function setupPdfExport() {
   const btnExport = document.getElementById("btn-export-pdf");
 
   if (!btnExport) return;
 
-  btnExport.addEventListener("click", () => {
+  btnExport.addEventListener("click", async () => {
     const originalText = btnExport.innerHTML;
     const inputStart = document.getElementById("report-start");
 
-    // Feedback visual de carregamento
     btnExport.innerHTML = '<i class="bi bi-hourglass-split"></i> Gerando...';
+    btnExport.disabled = true;
     document.body.style.cursor = "wait";
 
     const element = document.querySelector(".paper");
     const canvas = document.getElementById("report-chart");
     const img = document.createElement("img");
 
-    // Converte o Canvas em Imagem temporária para o html2canvas não falhar
     if (canvas) {
       img.src = canvas.toDataURL("image/png", 1.0);
       img.style.width = "100%";
@@ -24,7 +26,6 @@ function setupPdfExport() {
       canvas.parentNode.insertBefore(img, canvas);
     }
 
-    // Configuração HTML2PDF
     const opt = {
       margin: 0,
       filename: `Relatorio_Financeiro_${inputStart.value || "Geral"}.pdf`,
@@ -37,21 +38,21 @@ function setupPdfExport() {
       },
     };
 
-    // Gerar PDF
-    html2pdf()
-      .set(opt)
-      .from(element)
-      .save()
-      .catch((err) => {
-        console.error("Erro ao gerar PDF:", err);
-      })
-      .finally(() => {
-        if (canvas && img.parentNode) {
-          img.remove();
-          canvas.style.display = "block";
-        }
-        btnExport.innerHTML = originalText;
-        document.body.style.cursor = "default";
-      });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Gera o PDF
+      await html2pdf().set(opt).from(element).save();
+    } catch (err) {
+      console.error("[Erro] Falha ao gerar PDF:", err);
+    } finally {
+      if (canvas && img.parentNode) {
+        img.remove();
+        canvas.style.display = "block";
+      }
+      btnExport.innerHTML = originalText;
+      btnExport.disabled = false; // Destrava o botão
+      document.body.style.cursor = "default";
+    }
   });
 }

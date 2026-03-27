@@ -4,6 +4,9 @@ const path = require("path");
 
 let mainWindow = null;
 
+// ===========================================================
+// CONFIGURAÇÃO DA JANELA PRINCIPAL
+// ===========================================================
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1024,
@@ -33,13 +36,13 @@ const createWindow = () => {
    MÓDULO DE TRANSAÇÕES
    =========================================================== */
 
-ipcMain.handle("save-transaction", async (event, data) => {
+ipcMain.handle("save-transaction", (event, data) => {
   try {
     const processPayment = db.transaction((txData) => {
       const stmt = db.prepare(`
-          INSERT INTO transactions (amount, description, type, date, category, card_id) 
-          VALUES (?, ?, ?, ?, ?, ?)
-        `);
+        INSERT INTO transactions (amount, description, type, date, category, card_id) 
+        VALUES (?, ?, ?, ?, ?, ?)
+      `);
 
       const info = stmt.run(
         txData.value,
@@ -60,18 +63,15 @@ ipcMain.handle("save-transaction", async (event, data) => {
         if (card) {
           if (card.card_type === "Débito") {
             let newBalance = card.account_balance;
-            if (txData.type === "expense") newBalance -= txData.value;
-            if (txData.type === "income") newBalance += txData.value;
-
+            newBalance +=
+              txData.type === "income" ? txData.value : -txData.value;
             db.prepare("UPDATE cards SET account_balance = ? WHERE id = ?").run(
               newBalance,
               txData.card_id,
             );
           } else if (card.card_type === "Crédito") {
             let newLimit = card.limit_value;
-            if (txData.type === "expense") newLimit -= txData.value;
-            if (txData.type === "income") newLimit += txData.value;
-
+            newLimit += txData.type === "income" ? txData.value : -txData.value;
             db.prepare("UPDATE cards SET limit_value = ? WHERE id = ?").run(
               newLimit,
               txData.card_id,
@@ -91,18 +91,17 @@ ipcMain.handle("save-transaction", async (event, data) => {
   }
 });
 
-ipcMain.handle("search-transaction", async (event, period) => {
+ipcMain.handle("search-transaction", (event, period) => {
   try {
     let sql = "SELECT * FROM transactions";
     let params = [];
 
     if (period) {
-      sql += " WHERE date LIKE ?";
-      params.push(`${period}%`);
+      sql += " WHERE date LIKE ? || '%'";
+      params.push(period);
     }
 
     sql += " ORDER BY date DESC, id DESC";
-
     return db.prepare(sql).all(...params);
   } catch (err) {
     console.error("[Erro Backend] Buscar transações:", err);
@@ -110,11 +109,11 @@ ipcMain.handle("search-transaction", async (event, period) => {
   }
 });
 
-ipcMain.handle("update-transaction", async (event, id, data) => {
+ipcMain.handle("update-transaction", (event, id, data) => {
   try {
     const stmt = db.prepare(`
       UPDATE transactions 
-      SET amount = ?, description = ?, type = ?, category = ?, date = ?
+      SET amount = ?, description = ?, type = ?, category = ?
       WHERE id = ?
     `);
 
@@ -123,7 +122,6 @@ ipcMain.handle("update-transaction", async (event, id, data) => {
       data.description,
       data.type,
       data.category,
-      data.data,
       id,
     );
 
@@ -134,7 +132,7 @@ ipcMain.handle("update-transaction", async (event, id, data) => {
   }
 });
 
-ipcMain.handle("delete-transaction", async (event, id) => {
+ipcMain.handle("delete-transaction", (event, id) => {
   try {
     const info = db.prepare("DELETE FROM transactions WHERE id = ?").run(id);
     return { success: info.changes > 0 };
@@ -144,14 +142,14 @@ ipcMain.handle("delete-transaction", async (event, id) => {
   }
 });
 
-ipcMain.handle("get-summary", async (event, period) => {
+ipcMain.handle("get-summary", (event, period) => {
   try {
     let sql = "SELECT type, SUM(amount) as total FROM transactions";
     let params = [];
 
     if (period) {
-      sql += " WHERE date LIKE ?";
-      params.push(`${period}%`);
+      sql += " WHERE date LIKE ? || '%'";
+      params.push(period);
     }
 
     sql += " GROUP BY type";
@@ -176,7 +174,7 @@ ipcMain.handle("get-summary", async (event, period) => {
    MÓDULO DE CARTÕES
    =========================================================== */
 
-ipcMain.handle("save-card", async (event, card) => {
+ipcMain.handle("save-card", (event, card) => {
   try {
     const stmt = db.prepare(`
       INSERT INTO cards (name, last_digits, bank_color, limit_value, day_expiry, card_type, account_balance, account_type)
@@ -199,7 +197,7 @@ ipcMain.handle("save-card", async (event, card) => {
   }
 });
 
-ipcMain.handle("get-cards", async () => {
+ipcMain.handle("get-cards", () => {
   try {
     return db.prepare("SELECT * FROM cards ORDER BY id DESC").all();
   } catch (err) {
@@ -208,7 +206,7 @@ ipcMain.handle("get-cards", async () => {
   }
 });
 
-ipcMain.handle("update-card", async (event, id, card) => {
+ipcMain.handle("update-card", (event, id, card) => {
   try {
     const stmt = db.prepare(`
       UPDATE cards 
@@ -233,7 +231,7 @@ ipcMain.handle("update-card", async (event, id, card) => {
   }
 });
 
-ipcMain.handle("delete-card", async (event, id) => {
+ipcMain.handle("delete-card", (event, id) => {
   try {
     const info = db.prepare("DELETE FROM cards WHERE id = ?").run(id);
     return { success: info.changes > 0 };
@@ -247,30 +245,35 @@ ipcMain.handle("delete-card", async (event, id) => {
    MÓDULO DE RELATÓRIOS
    =========================================================== */
 
-ipcMain.handle("get-report-data", async (event, startDate, endDate) => {
+ipcMain.handle("get-report-data", (event, startDate, endDate) => {
   try {
-    // Busca a lista de transações para desenhar a tabela e os gráficos
-    const transactionsSql = `
+    const transactions = db
+      .prepare(
+        `
       SELECT * FROM transactions 
       WHERE date >= ? AND date <= ?
       ORDER BY date DESC
-    `;
-    const transactions = db.prepare(transactionsSql).all(startDate, endDate);
+    `,
+      )
+      .all(startDate, endDate);
 
-    const summarySql = `
+    const results = db
+      .prepare(
+        `
       SELECT type, SUM(amount) as total FROM transactions 
       WHERE date >= ? AND date <= ?
       GROUP BY type
-    `;
-    const results = db.prepare(summarySql).all(startDate, endDate);
+    `,
+      )
+      .all(startDate, endDate);
 
     let summary = { inflow: 0, outflow: 0, balance: 0 };
     results.forEach((row) => {
       if (row.type === "income") summary.inflow = row.total;
       if (row.type === "expense") summary.outflow = row.total;
     });
-    summary.balance = summary.inflow - summary.outflow;
 
+    summary.balance = summary.inflow - summary.outflow;
     return { transactions, summary };
   } catch (err) {
     console.error("[Erro Backend] Obter dados do relatório:", err);
@@ -282,7 +285,7 @@ ipcMain.handle("get-report-data", async (event, startDate, endDate) => {
    MÓDULO DE CONFIGURAÇÕES (Settings)
    =========================================================== */
 
-ipcMain.handle("get-setting", async (event, key) => {
+ipcMain.handle("get-setting", (event, key) => {
   try {
     const row = db.prepare("SELECT value FROM settings WHERE key = ?").get(key);
     return row ? row.value : null;
@@ -292,7 +295,7 @@ ipcMain.handle("get-setting", async (event, key) => {
   }
 });
 
-ipcMain.handle("save-setting", async (event, key, value) => {
+ipcMain.handle("save-setting", (event, key, value) => {
   try {
     db.prepare(
       "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)",
@@ -308,7 +311,7 @@ ipcMain.handle("save-setting", async (event, key, value) => {
    MÓDULO DE HISTÓRICO DE RELATÓRIOS
    =========================================================== */
 
-ipcMain.handle("save-report-history", async (event, data) => {
+ipcMain.handle("save-report-history", (event, data) => {
   try {
     const last = db
       .prepare("SELECT * FROM report_history ORDER BY id DESC LIMIT 1")
@@ -324,10 +327,12 @@ ipcMain.handle("save-report-history", async (event, data) => {
     }
 
     db.prepare(
-      "INSERT INTO report_history (start_date, end_date, type, timestamp) VALUES (?, ?, ?, ?)",
+      `
+      INSERT INTO report_history (start_date, end_date, type, timestamp) 
+      VALUES (?, ?, ?, ?)
+    `,
     ).run(data.start, data.end, data.type, Date.now());
 
-    // Limpeza automática (mantém 12 registros)
     db.prepare(
       `
       DELETE FROM report_history 
@@ -342,7 +347,7 @@ ipcMain.handle("save-report-history", async (event, data) => {
   }
 });
 
-ipcMain.handle("get-report-history", async () => {
+ipcMain.handle("get-report-history", () => {
   try {
     return db.prepare("SELECT * FROM report_history ORDER BY id DESC").all();
   } catch (err) {
@@ -351,7 +356,7 @@ ipcMain.handle("get-report-history", async () => {
   }
 });
 
-ipcMain.handle("clear-report-history", async () => {
+ipcMain.handle("clear-report-history", () => {
   try {
     db.prepare("DELETE FROM report_history").run();
     return { success: true };

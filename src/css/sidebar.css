@@ -15,6 +15,7 @@
   top: 0;
   z-index: 100;
   -webkit-app-region: drag;
+  user-select: none;
 }
 
 .sidebar ul {

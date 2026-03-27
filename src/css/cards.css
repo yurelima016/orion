@@ -21,7 +21,9 @@
   gap: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   border: 1px solid #f0f2f5;
-  transition: transform 0.2s;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
 }
 
 .credit-metric-card:hover {
@@ -41,6 +43,7 @@
   font-size: 1.5rem;
 }
 
+/* Cores específicas para os ícones de resumo */
 .icon-box-warning {
   background: rgba(219, 183, 52, 0.1) !important;
   color: #dbb734 !important;
@@ -68,18 +71,20 @@
 
 /* --- Layout da Grade de Cartões --- */
 .cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-self: flex-start;
   gap: 25px;
   margin-top: 30px;
-  align-items: start;
   background: transparent;
 }
 
+/* --- Visual Base do Cartão e Card Fantasma --- */
 .credit-card,
 .card-add-ghost {
   width: 100%;
-  max-width: 400px;
+  flex: 0 1 380px;
   height: 230px;
   border-radius: 15px;
   padding: 25px;
@@ -91,55 +96,11 @@
   overflow: hidden;
   transition: transform 0.3s;
   cursor: default;
+  box-sizing: border-box;
 }
 
-@media (max-width: 1100px) {
-  .cards-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 30px 15px 30px 15px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    background-color: transparent;
-  }
-
-  .credit-card,
-  .card-add-ghost {
-    flex: 0 0 380px;
-    scroll-snap-align: center;
-  }
-
-  .cards-grid::-webkit-scrollbar {
-    height: 8px;
-  }
-  .cards-grid::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-  }
-  .cards-grid::-webkit-scrollbar-thumb {
-    background: rgba(189, 195, 199, 0.5);
-    border-radius: 10px;
-  }
-  .cards-grid::-webkit-scrollbar-thumb:hover {
-    background: rgba(189, 195, 199, 0.8);
-  }
-}
-
-/* --- Visual Base do Cartão --- */
 .credit-card {
-  height: 230px;
-  border-radius: 15px;
-  padding: 25px;
   color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s;
-  cursor: default;
 }
 
 .credit-card::before {
@@ -273,7 +234,7 @@
 
 /* --- Barra Lateral de Ações (Estrela, Editar, Excluir) --- */
 .card-actions-sidebar {
-  position: absolute !important;
+  position: absolute;
   top: 20px;
   right: 15px;
   display: flex;
@@ -285,7 +246,9 @@
 .card-actions-sidebar i {
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
   font-size: 1rem;
   display: inline-block;
   width: 34px;
@@ -298,7 +261,6 @@
 .card-actions-sidebar i:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
-
 .card-actions-sidebar i.star-yellow {
   color: #f1c40f !important;
 }
@@ -317,11 +279,7 @@
 
 /* --- Card Fantasma (Adicionar Novo) --- */
 .card-add-ghost {
-  height: 230px;
-  border-radius: 15px;
   border: 2px dashed #ccc;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -390,4 +348,39 @@
 .card-blue {
   background: linear-gradient(135deg, #005ca9, #003b6d);
   color: white;
+}
+
+/* =========================================================
+   RESPONSIVIDADE: CARROSSEL DE CARTÕES (Janelas estreitas)
+   ========================================================= */
+@media (max-width: 1100px) {
+  .cards-grid {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 30px 15px;
+    gap: 20px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .credit-card,
+  .card-add-ghost {
+    flex: 0 0 380px;
+    scroll-snap-align: center;
+  }
+
+  .cards-grid::-webkit-scrollbar {
+    height: 8px;
+  }
+  .cards-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  .cards-grid::-webkit-scrollbar-thumb {
+    background: rgba(189, 195, 199, 0.5);
+    border-radius: 10px;
+  }
+  .cards-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(189, 195, 199, 0.8);
+  }
 }

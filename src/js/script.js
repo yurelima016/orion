@@ -67,18 +67,20 @@ function setupNavigation() {
     Object.values(links).forEach((el) => {
       el.classList.remove("active");
       const icon = el.querySelector("i");
-      icon.className = icon.className.replace("-fill", "");
+      if (icon) icon.className = icon.className.replace("-fill", "");
     });
 
     views[viewName].classList.remove("d-none");
     links[viewName].classList.add("active");
 
     const activeIcon = links[viewName].querySelector("i");
-    const iconClass = Array.from(activeIcon.classList).find(
-      (c) => c.startsWith("bi-") && c !== "bi",
-    );
-    if (iconClass && !iconClass.includes("-fill")) {
-      activeIcon.classList.replace(iconClass, iconClass + "-fill");
+    if (activeIcon) {
+      const iconClass = Array.from(activeIcon.classList).find(
+        (c) => c.startsWith("bi-") && c !== "bi",
+      );
+      if (iconClass && !iconClass.includes("-fill")) {
+        activeIcon.classList.replace(iconClass, iconClass + "-fill");
+      }
     }
   };
 
@@ -95,9 +97,8 @@ function setupWindowControls() {
   const btnMaximize = document.getElementById("btn-maximize");
   const btnClose = document.getElementById("btn-close");
 
-  if (btnMinimize) {
+  if (btnMinimize)
     btnMinimize.addEventListener("click", () => window.api.windowMinimize());
-  }
 
   if (btnMaximize) {
     btnMaximize.addEventListener("click", () => {
@@ -111,9 +112,8 @@ function setupWindowControls() {
     });
   }
 
-  if (btnClose) {
+  if (btnClose)
     btnClose.addEventListener("click", () => window.api.windowClose());
-  }
 }
 
 async function setupUserProfile() {
@@ -158,6 +158,19 @@ async function setupUserProfile() {
   });
 }
 
+// ==========================================
+// RESET DE AÇÕES EM MASSA
+// ==========================================
+function resetBulkActions() {
+  const btnBulkDelete = document.getElementById("btn-bulk-delete");
+  const selectAllCheckbox = document.getElementById("select-all");
+  const selectedCountSpan = document.getElementById("selected-count");
+
+  if (btnBulkDelete) btnBulkDelete.classList.add("d-none");
+  if (selectAllCheckbox) selectAllCheckbox.checked = false;
+  if (selectedCountSpan) selectedCountSpan.innerText = "0";
+}
+
 // =========================================================
 // TRANSAÇÕES (DASHBOARD)
 // =========================================================
@@ -176,32 +189,30 @@ async function loadTransactions() {
     work: "💼",
   };
 
-  let htmlContent = "";
-  currentTransactions.forEach((t) => {
-    const cat = t.category || "others";
-    const icon = icons[cat] || "📦";
-    const colorClass = t.type === "income" ? "text-income" : "text-expense";
-    const sign = t.type === "income" ? "+" : "-";
-    let paymentBadge = `<span class="badge-payment badge-payment-cash">DINHEIRO / PIX</span>`;
+  const htmlContent = currentTransactions
+    .map((t) => {
+      const cat = t.category || "others";
+      const icon = icons[cat] || "📦";
+      const colorClass = t.type === "income" ? "text-income" : "text-expense";
+      const sign = t.type === "income" ? "+" : "-";
+      let paymentBadge = `<span class="badge-payment badge-payment-cash">DINHEIRO / PIX</span>`;
 
-    if (t.card_id) {
-      const cardUsed = currentCards.find(
-        (c) => String(c.id) === String(t.card_id),
-      );
-      if (cardUsed) {
-        const bankName = cardUsed.bank_color
-          ? cardUsed.bank_color.toUpperCase().replace(/_/g, " ")
-          : "CARTÃO";
-
-        const bankClass = cardUsed.bank_color
-          ? `badge-${cardUsed.bank_color}`
-          : "badge-payment-cash";
-
-        paymentBadge = `<span class="badge-payment ${bankClass}">${bankName}</span>`;
+      if (t.card_id) {
+        const cardUsed = currentCards.find(
+          (c) => String(c.id) === String(t.card_id),
+        );
+        if (cardUsed) {
+          const bankName = cardUsed.bank_color
+            ? cardUsed.bank_color.toUpperCase().replace(/_/g, " ")
+            : "CARTÃO";
+          const bankClass = cardUsed.bank_color
+            ? `badge-${cardUsed.bank_color}`
+            : "badge-payment-cash";
+          paymentBadge = `<span class="badge-payment ${bankClass}">${bankName}</span>`;
+        }
       }
-    }
 
-    htmlContent += `
+      return `
       <tr>
         <td class="col-checkbox text-center"><input type="checkbox" class="row-checkbox" value="${t.id}"></td>
         <td>
@@ -214,18 +225,20 @@ async function loadTransactions() {
             </div>
         </td>
         <td class="amount-col ${colorClass} font-bold">${sign} <span class="privacy-sensitive">${formatCurrency(t.amount)}</span></td>
-        <td>${new Date(t.date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</td>
+        <td>${new Date(t.date).toLocaleDateString("pt-BR")}</td>
         <td class="text-center">
-          <button class="btn-edit btn-action-edit" data-id="${t.id}"><i class="bi bi-pen"></i></button>
-          <button class="btn-delete btn-action-delete" data-id="${t.id}"><i class="bi bi-trash3"></i></button>
+          <button class="btn-edit btn-action-edit" data-id="${t.id}" type="button"><i class="bi bi-pen"></i></button>
+          <button class="btn-delete btn-action-delete" data-id="${t.id}" type="button"><i class="bi bi-trash3"></i></button>
         </td>
       </tr>`;
-  });
+    })
+    .join("");
 
   tbody.innerHTML = htmlContent;
   setupCheckboxEvents();
   renderCategoryChart(currentTransactions);
   renderDailyChart(currentTransactions);
+  resetBulkActions();
 }
 
 async function loadSummary() {
@@ -309,9 +322,8 @@ document.getElementById("save-button").addEventListener("click", async (e) => {
           const transactionOld = currentTransactions.find(
             (t) => String(t.id) === String(editingTransactionId),
           );
-          if (transactionOld) {
+          if (transactionOld)
             expensesInthisMonth -= Number(transactionOld.amount);
-          }
         }
 
         const limitAvailable =
@@ -331,13 +343,20 @@ document.getElementById("save-button").addEventListener("click", async (e) => {
     }
   }
 
+  const now = new Date();
+  const localIsoString = new Date(
+    now.getTime() - now.getTimezoneOffset() * 60000,
+  )
+    .toISOString()
+    .slice(0, -1);
+
   const data = {
     value: Number(valueInput.value),
     description: descInput.value,
     type: typeInput.value,
     category: catInput.value,
     card_id: paymentMethodInput.value ? Number(paymentMethodInput.value) : null,
-    data: new Date().toISOString(),
+    data: localIsoString,
   };
 
   let result = editingTransactionId
@@ -358,7 +377,10 @@ document.getElementById("save-button").addEventListener("click", async (e) => {
     await loadSummary();
     await loadEvolutionData();
     await loadCards();
-    descInput.focus();
+
+    document
+      .querySelector(".transactions-list")
+      .scrollIntoView({ behavior: "smooth" });
   }
 });
 
@@ -586,18 +608,14 @@ function populatePaymentMethods(mainCreditId, mainDebitId) {
   if (!select) return;
 
   const currentValue = select.value;
-
   let optionsHtml = '<option value="">💵 Dinheiro</option>';
 
   currentCards.forEach((card) => {
     const bankName = bankNamesMap[card.bank_color] || "Cartão";
-
     const isMain =
       String(card.id) === String(mainCreditId) ||
       String(card.id) === String(mainDebitId);
-
     const emoji = isMain ? "⭐" : "💳";
-
     optionsHtml += `<option value="${card.id}">${emoji} ${bankName} (Final ${card.last_digits})</option>`;
   });
 
@@ -773,15 +791,13 @@ async function removeCard(id) {
 // RELATÓRIOS
 // =========================================================
 
-let activeReportKey = null; // Variável para controlar o relatório visível na prancheta
+let activeReportKey = null;
 
-// 1. Função Central que processa e desenha a prancheta
 async function loadReportView(start, end, type, isNewSearch = true) {
   if (!start || !end) return;
 
   const reportKey = `${start}|${end}|${type}`;
 
-  // LÓGICA DE TOGGLE: Se clicou no histórico no mesmo relatório já aberto, esconde tudo e sai.
   if (
     !isNewSearch &&
     activeReportKey === reportKey &&
@@ -789,21 +805,14 @@ async function loadReportView(start, end, type, isNewSearch = true) {
   ) {
     document.getElementById("report-content").classList.add("d-none");
     document.getElementById("btn-export-pdf").classList.add("d-none");
-    activeReportKey = null; // Reseta o estado
-
-    // Remove o destaque visual dos cards
+    activeReportKey = null;
     document
       .querySelectorAll(".history-card")
       .forEach((c) => c.classList.remove("active-history"));
     return;
   }
 
-  // Se for pesquisa nova no botão "Filtrar", salva no banco de dados
-  if (isNewSearch) {
-    await saveReportToHistory(start, end, type);
-  }
-
-  // Define o relatório atual como o ativo
+  if (isNewSearch) await saveReportToHistory(start, end, type);
   activeReportKey = reportKey;
 
   const endQuery = end + "T23:59:59.999Z";
@@ -812,7 +821,6 @@ async function loadReportView(start, end, type, isNewSearch = true) {
   if (type !== "all") filtered = filtered.filter((t) => t.type === type);
 
   const { inflow, outflow, balance } = data.summary;
-
   const tbody = document.getElementById("report-table-body");
   const icons = {
     others: "📦",
@@ -823,43 +831,28 @@ async function loadReportView(start, end, type, isNewSearch = true) {
     work: "💼",
   };
 
-  let tbodyHtml = "";
-  filtered.forEach((t) => {
-    const cat = t.category || "others";
-    const info = categoryMap[cat] || categoryMap.others;
-    const colorClass = t.type === "income" ? "text-income" : "text-expense";
-
-    tbodyHtml += `
+  tbody.innerHTML = filtered
+    .map((t) => {
+      const cat = t.category || "others";
+      const info = categoryMap[cat] || categoryMap.others;
+      const colorClass = t.type === "income" ? "text-income" : "text-expense";
+      return `
       <tr>
-        <td>${new Date(t.date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</td>
+        <td>${new Date(t.date).toLocaleDateString("pt-BR")}</td>
         <td><span class="category-badge badge-${cat}">${icons[cat] || "📦"} ${info.label}</span></td>
         <td>${t.description}</td>
         <td class="${colorClass} font-bold">${t.type === "income" ? "+" : "-"} ${formatCurrency(t.amount)}</td>
       </tr>`;
-  });
-  tbody.innerHTML = tbodyHtml;
+    })
+    .join("");
 
   document.getElementById("report-summary-area").innerHTML = `
     <div class="summary-col">
-      <div class="summary-card border-income">
-        <h3 class="summary-label">Entradas</h3>
-        <p class="summary-value income">${formatCurrency(inflow)}</p>
-      </div>
-      <div class="summary-card border-expense">
-        <h3 class="summary-label">Saídas</h3>
-        <p class="summary-value expense">${formatCurrency(outflow)}</p>
-      </div>
-      <div class="summary-card border-balance">
-        <h3 class="summary-label">Saldo Líquido</h3>
-        <p class="summary-value balance">${formatCurrency(balance)}</p>
-      </div>
+      <div class="summary-card border-income"><h3 class="summary-label">Entradas</h3><p class="summary-value income">${formatCurrency(inflow)}</p></div>
+      <div class="summary-card border-expense"><h3 class="summary-label">Saídas</h3><p class="summary-value expense">${formatCurrency(outflow)}</p></div>
+      <div class="summary-card border-balance"><h3 class="summary-label">Saldo Líquido</h3><p class="summary-value balance">${formatCurrency(balance)}</p></div>
     </div>
-    <div class="report-chart-box">
-      <h3 class="report-chart-title">Distribuição de Gastos</h3>
-      <div class="report-chart-wrapper">
-        <canvas id="report-chart"></canvas>
-      </div>
-    </div>
+    <div class="report-chart-box"><h3 class="report-chart-title">Distribuição de Gastos</h3><div class="report-chart-wrapper"><canvas id="report-chart"></canvas></div></div>
   `;
 
   renderReportChart(filtered);
@@ -876,18 +869,12 @@ async function loadReportView(start, end, type, isNewSearch = true) {
   document.getElementById("report-period-label").textContent =
     `Período: ${new Date(start).toLocaleDateString("pt-BR")} até ${new Date(end).toLocaleDateString("pt-BR")} (${labelMap[type]})`;
 
-  // Destaca o card do histórico que acabou de ser aberto
   document.querySelectorAll(".history-card").forEach((c) => {
     const cKey = `${c.dataset.start}|${c.dataset.end}|${c.dataset.type}`;
-    if (cKey === activeReportKey) {
-      c.classList.add("active-history");
-    } else {
-      c.classList.remove("active-history");
-    }
+    c.classList.toggle("active-history", cKey === activeReportKey);
   });
 }
 
-// 2. Evento do Botão "Filtrar"
 document
   .getElementById("btn-generate-report")
   .addEventListener("click", async () => {
@@ -900,11 +887,9 @@ document
       setInputError(document.getElementById("report-end"));
       return;
     }
-
     await loadReportView(start, end, type, true);
   });
 
-// 3. Histórico de Relatórios
 async function saveReportToHistory(start, end, type) {
   await window.api.saveReportHistory({ start, end, type });
   await renderReportHistory();
@@ -921,35 +906,29 @@ async function renderReportHistory() {
   }
 
   const types = { all: "Todas", income: "Entradas", expense: "Saídas" };
-  let historyHtml = "";
 
-  history.forEach((item) => {
-    const itemKey = `${item.start_date}|${item.end_date}|${item.type}`;
-    // Se o card sendo desenhado for o relatório ativo no momento, já coloca a classe nele
-    const activeClass =
-      itemKey === activeReportKey &&
-      !document.getElementById("report-content").classList.contains("d-none")
-        ? "active-history"
-        : "";
-
-    historyHtml += `
+  container.innerHTML = history
+    .map((item) => {
+      const itemKey = `${item.start_date}|${item.end_date}|${item.type}`;
+      const activeClass =
+        itemKey === activeReportKey &&
+        !document.getElementById("report-content").classList.contains("d-none")
+          ? "active-history"
+          : "";
+      return `
       <div class="history-card ${activeClass}" data-start="${item.start_date}" data-end="${item.end_date}" data-type="${item.type}">
         <div class="history-card-header"><i class="bi bi-file-earmark-text"></i> <small>Visualizar</small></div>
         <div class="history-period">${new Date(item.start_date).toLocaleDateString("pt-BR", { timeZone: "UTC" })} - ${new Date(item.end_date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</div>
         <div class="history-type">${types[item.type]}</div>
-      </div>
-    `;
-  });
+      </div>`;
+    })
+    .join("");
 
-  container.innerHTML = historyHtml;
-
-  // 4. Clique nos cards de histórico
   container.querySelectorAll(".history-card").forEach((card) => {
     card.addEventListener("click", async () => {
       document.getElementById("report-start").value = card.dataset.start;
       document.getElementById("report-end").value = card.dataset.end;
       document.getElementById("report-type").value = card.dataset.type;
-
       await loadReportView(
         card.dataset.start,
         card.dataset.end,
@@ -960,7 +939,6 @@ async function renderReportHistory() {
   });
 }
 
-// 5. Botão Limpar Histórico
 window.clearReportHistory = async function () {
   if (
     await showCustomModal(
@@ -973,9 +951,8 @@ window.clearReportHistory = async function () {
   ) {
     await window.api.clearReportHistory();
     await renderReportHistory();
-
     document.getElementById("report-content").classList.add("d-none");
     document.getElementById("btn-export-pdf").classList.add("d-none");
-    activeReportKey = null; // Limpa o rastro do ativo
+    activeReportKey = null;
   }
 };

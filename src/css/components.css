@@ -22,7 +22,11 @@ header {
   font-size: 1.2rem;
 }
 
-/* --- Botões Genéricos --- */
+/* =========================================================
+   BOTÕES E INTERAÇÕES
+   ========================================================= */
+
+/* --- Botão Principal de Salvar --- */
 #save-button {
   background: linear-gradient(135deg, #0c1116 0%, #1f262e 50%, #0c1116 100%);
   color: white;
@@ -32,16 +36,17 @@ header {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    filter 0.15s ease;
   margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+  will-change: transform, box-shadow;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
 #save-button:hover {
@@ -54,6 +59,7 @@ header {
   background: linear-gradient(135deg, #f39c12, #d35400) !important;
 }
 
+/* --- Botões de Ação na Tabela (Ícones) --- */
 .btn-delete,
 .btn-edit {
   background: transparent;
@@ -77,6 +83,64 @@ header {
   background-color: rgba(52, 152, 219, 0.1);
 }
 
+/* --- Botões Base (Modais e Alertas) --- */
+.btn-secondary,
+.btn-danger,
+.btn-success,
+.btn-sad,
+.btn-question {
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-secondary {
+  background-color: #ecf0f1;
+  color: #7f8c8d;
+}
+.btn-secondary:hover {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-success {
+  background-color: #09994a;
+  color: white;
+}
+.btn-success:hover {
+  background-color: #088841;
+}
+
+.btn-question {
+  background-color: #f39c12;
+  color: white;
+}
+.btn-question:hover {
+  background-color: #d68910;
+}
+
+.btn-sad {
+  background-color: #3498db;
+  color: white;
+}
+.btn-sad:hover {
+  background-color: #2980b9;
+}
+
+/* Botão de excluir em massa */
 .btn-danger-soft {
   background-color: #fceceb;
   color: #e74c3c;
@@ -90,86 +154,12 @@ header {
     background-color 0.2s ease,
     color 0.2s ease;
 }
-
 .btn-danger-soft:hover {
   background-color: #e74c3c;
   color: white;
 }
 
-.btn-secondary,
-.btn-danger,
-.btn-success,
-.btn-sad,
-.btn-question {
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-  border: none;
-}
-
-/* --- Secundário (Cancelar) --- */
-.btn-secondary {
-  background-color: #ecf0f1;
-  color: #7f8c8d;
-}
-.btn-secondary:hover {
-  background-color: #bdc3c7;
-  color: #2c3e50;
-}
-
-/* --- Perigo --- */
-.btn-danger {
-  background-color: #e74c3c;
-  color: white;
-}
-.btn-danger:hover {
-  background-color: #c0392b;
-}
-
-/* --- Sucesso --- */
-.btn-success {
-  background-color: #09994a;
-  color: white;
-}
-.btn-success:hover {
-  background-color: #088841;
-}
-
-/* --- Alerta --- */
-.btn-question {
-  background-color: #f39c12;
-  color: white;
-}
-.btn-question:hover {
-  background-color: #d68910;
-}
-
-/* --- Pergunta --- */
-.btn-sad {
-  background-color: #3498db;
-  color: white;
-}
-.btn-sad:hover {
-  background-color: #2980b9;
-}
-
-.text-danger {
-  color: #e74c3c !important;
-}
-.text-success {
-  color: #09994a !important;
-}
-.text-question {
-  color: #f39c12 !important;
-}
-.text-sad {
-  color: #3498db !important;
-}
-
+/* Botão invisível */
 .btn-ghost {
   background: transparent;
   color: #7f8c8d;
@@ -182,12 +172,12 @@ header {
     background-color 0.2s ease,
     color 0.2s ease;
 }
-
 .btn-ghost:hover {
   background: #f0f2f5;
   color: #333;
 }
 
+/* Botão principal de Modais */
 .btn-primary-modal {
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
@@ -206,11 +196,6 @@ header {
   transform: translateY(-2px);
 }
 
-.btn-centered {
-  justify-content: center;
-  border-radius: 6px;
-}
-
 .btn-dark-full {
   width: 100%;
   background: #2c3e50;
@@ -226,7 +211,9 @@ header {
   background: #1a252f;
 }
 
-/* --- Tabelas Gerais --- */
+/* =========================================================
+   TABELAS
+   ========================================================= */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -247,10 +234,10 @@ tbody tr {
   transition: background-color 0.2s;
   border-bottom: 1px solid #f9f9f9;
 }
-
 tbody tr:hover {
   background-color: #f8f9fa;
 }
+
 tbody td {
   padding: 15px 10px;
   color: #555;
@@ -263,7 +250,9 @@ tbody td {
   text-align: center;
 }
 
-/* --- Modais (Infraestrutura) --- */
+/* =========================================================
+   MODAIS E OVERLAYS
+   ========================================================= */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -278,6 +267,10 @@ tbody td {
   backdrop-filter: blur(3px);
 }
 
+.show-modal {
+  display: flex !important;
+}
+
 .modal-card {
   background: white;
   padding: 30px;
@@ -289,7 +282,7 @@ tbody td {
   flex-direction: column;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  animation: modalPopIn 0.3s ease-out;
+  animation: modalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .modal-card.card-modal-style {
@@ -318,16 +311,24 @@ tbody td {
 .modal-header i {
   font-size: 5rem;
 }
+
 .modal-card p {
   margin-bottom: 30px;
   color: #666;
   line-height: 1.5;
 }
+
 .modal-actions {
   display: flex;
   justify-content: center;
   gap: 15px;
 }
+
+.modal-actions-col {
+  flex-direction: column;
+  gap: 10px;
+}
+
 .modal-footer {
   margin-top: 30px;
   display: flex;
@@ -337,7 +338,7 @@ tbody td {
   padding-top: 20px;
 }
 
-/* Modais Especiais */
+/* Modal Novo Cartão - Header */
 .modal-header-modern {
   text-align: center;
   margin-bottom: 30px;
@@ -366,26 +367,21 @@ tbody td {
   font-size: 1.8rem;
 }
 
-.show-modal {
-  display: flex !important;
-}
-
-.modal-actions-col {
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* --- Formulários Modernos --- */
+/* =========================================================
+   FORMULÁRIOS (Inputs e Selects)
+   ========================================================= */
 .modern-form-modal {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
 .modern-form-modal .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
+
 .modern-form-modal label {
   display: block;
   margin-bottom: 8px;
@@ -400,6 +396,7 @@ tbody td {
   display: flex;
   align-items: center;
 }
+
 .input-icon,
 .currency-symbol {
   position: absolute;
@@ -408,6 +405,7 @@ tbody td {
   font-size: 1.1rem;
   pointer-events: none;
 }
+
 .currency-symbol {
   font-weight: bold;
   font-size: 0.9rem;
@@ -442,25 +440,7 @@ tbody td {
   box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
 }
 
-/* Scroll interno do formulário de cartão */
-#card-form {
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 8px;
-}
-#card-form::-webkit-scrollbar {
-  width: 6px;
-}
-#card-form::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-}
-#card-form::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-/* --- Inputs Específicos --- */
+/* Checkbox Base */
 input[type="checkbox"] {
   cursor: pointer;
   accent-color: #3498db;
@@ -468,12 +448,7 @@ input[type="checkbox"] {
   height: 16px;
 }
 
-.input-error {
-  border-color: #e74c3c !important;
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
-  animation: shake 0.3s ease-in-out;
-}
-
+/* Edit no Header do Sidebar */
 .profile-edit-input {
   width: 120px;
   padding: 4px 8px;
@@ -483,6 +458,13 @@ input[type="checkbox"] {
   color: #fff;
   font-size: 0.9rem;
   outline: none;
+}
+
+/* Animação de Erro de Input */
+.input-error {
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+  animation: shake 0.3s ease-in-out;
 }
 
 @keyframes shake {
@@ -499,66 +481,29 @@ input[type="checkbox"] {
   }
 }
 
+/* Scroll interno form */
+#card-form {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+#card-form::-webkit-scrollbar {
+  width: 6px;
+}
+#card-form::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+#card-form::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
 /* =========================================================
-   UTILITY CLASSES (Estilos Dinâmicos e Helpers)
+   BADGES (Etiquetas Dinâmicas)
    ========================================================= */
 
-/* --- Visibilidade e Layout --- */
-.d-none {
-  display: none !important;
-}
-.w-100 {
-  width: 100%;
-}
-.mb-15 {
-  margin-bottom: 15px;
-}
-
-.flex-between-center {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* --- Cores de Texto Padrão --- */
-.text-income {
-  color: #27ae60 !important;
-}
-.text-expense {
-  color: #c0392b !important;
-}
-.text-success {
-  color: #2ecc71 !important;
-}
-.text-warning {
-  color: #f1c40f;
-}
-.text-gray {
-  color: #888;
-}
-
-/* --- Tipografia e Alinhamento --- */
-.font-bold {
-  font-weight: bold;
-}
-.text-right {
-  text-align: right;
-}
-.text-center {
-  text-align: center;
-}
-.nowrap {
-  white-space: nowrap;
-}
-
-.text-muted-italic {
-  color: #999;
-  font-style: italic;
-  text-align: center;
-  width: 100%;
-}
-
-/* Badges dos cartões para a lista de transações */
+/* --- Badges de Pagamento / Bancos --- */
 .badge-payment {
   font-size: 0.65rem;
   padding: 2px 8px;
@@ -569,13 +514,11 @@ input[type="checkbox"] {
   letter-spacing: 0.5px;
   font-weight: 600;
 }
-
 .badge-payment-cash {
   background-color: rgba(149, 165, 166, 0.1);
   border-color: #95a5a6;
   color: #7f8c8d;
 }
-
 .badge-nubank {
   background-color: rgba(138, 5, 190, 0.1);
   border-color: #8a05be;
@@ -632,8 +575,69 @@ input[type="checkbox"] {
   color: #005ca9;
 }
 
+/* =========================================================
+   UTILITY CLASSES (Helpers)
+   ========================================================= */
+.d-none {
+  display: none !important;
+}
+.w-100 {
+  width: 100%;
+}
+.mb-15 {
+  margin-bottom: 15px;
+}
+
+.flex-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .desc-text-col {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+/* Helpers de Texto */
+.font-bold {
+  font-weight: bold;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.text-muted-italic {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  width: 100%;
+}
+.text-gray {
+  color: #888;
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+.text-success {
+  color: #09994a !important;
+}
+.text-question {
+  color: #f39c12 !important;
+}
+.text-sad {
+  color: #3498db !important;
+}
+.text-income {
+  color: #27ae60 !important;
+}
+.text-expense {
+  color: #c0392b !important;
 }

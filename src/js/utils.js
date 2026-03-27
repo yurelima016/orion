@@ -57,17 +57,12 @@ const getLast6Months = () => {
 // MODAIS E CONTROLE DE INTERFACE
 // =========================================================
 
-// Botão de Privacidade
+// Controle de Privacidade
 document.addEventListener("DOMContentLoaded", () => {
   const togglePrivacyBtn = document.getElementById("toggle-privacy");
   const privacyIcon = document.getElementById("privacy-icon");
 
-  if (!togglePrivacyBtn || !privacyIcon) {
-    console.error(
-      "Erro: Botão ou ícone de privacidade não encontrados no DOM.",
-    );
-    return;
-  }
+  if (!togglePrivacyBtn || !privacyIcon) return;
 
   let isPrivacyMode = localStorage.getItem("privacyMode") === "true";
 
@@ -128,7 +123,6 @@ function showCustomModal(
 
     const closeModal = (result) => {
       modal.classList.remove("show-modal");
-      // Limpa eventos para não acumular
       btnConfirm.onclick = null;
       btnCancel.onclick = null;
       modal.onclick = null;
